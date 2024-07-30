@@ -19,6 +19,7 @@ sp-consensus-babe = { features = ["serde"], workspace = true }
 scale-info = { features = ["derive", "serde"], workspace = true }
 sc-service = { workspace = true }
 sc-client-api = { workspace = true }
+sp-inherents = { workspace = true, features = ["default"] }
 
 fc-rpc = { workspace = true, features = [
     "rpc-binary-search-estimate",

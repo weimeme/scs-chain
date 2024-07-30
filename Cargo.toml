@@ -105,7 +105,7 @@ sp-runtime = { git="https://github.com/paritytech/polkadot-sdk", branch="release
 sp-consensus-babe = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
 sc-service = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 sc-client-api = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
-
+sp-inherents = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 [profile.release]
 # Polkadot runtime requires unwinding.
 panic = "unwind"
