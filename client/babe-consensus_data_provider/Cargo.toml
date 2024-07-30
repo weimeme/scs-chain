@@ -1,0 +1,30 @@
+[package]
+name = "babe-consensus_data_provider"
+version = "0.1.0"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+license.workspace = true
+homepage.workspace = true
+
+[dependencies]
+# Substrate
+#parity-scale-codec = { workspace = true, features = ["derive", "std"] }
+sp-api = { workspace = true, features = ["std"] }
+sp-application-crypto = { workspace = true }
+sp-core = { workspace = true, features = ["std"] }
+sp-keystore = { workspace = true }
+sp-runtime = { workspace = true }
+
+# Polkadot
+#polkadot-primitives = { workspace = true }
+
+# Other
+#schnorrkel = { workspace = true, default-features = false, features = [
+#    "preaudit_deprecated",
+#] }
+
+
+
+[lints]
+workspace = true
