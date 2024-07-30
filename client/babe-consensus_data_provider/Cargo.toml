@@ -15,6 +15,15 @@ sp-application-crypto = { workspace = true }
 sp-core = { workspace = true, features = ["std"] }
 sp-keystore = { workspace = true }
 sp-runtime = { workspace = true }
+sp-consensus-babe = { features = ["serde"], workspace = true }
+scale-info = { features = ["derive", "serde"], workspace = true }
+sc-service = { workspace = true }
+
+fc-rpc = { workspace = true, features = [
+    "rpc-binary-search-estimate",
+    "txpool",
+] }
+
 
 # Polkadot
 #polkadot-primitives = { workspace = true }

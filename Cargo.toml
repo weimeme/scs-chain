@@ -47,6 +47,7 @@ extra-unused-type-parameters = { level = "allow", priority = 2 }     # stylistic
 default_constructed_unit_structs = { level = "allow", priority = 2 } # stylistic
 
 [workspace.dependencies]
+scale-info = { version = "2.11.1", default-features = false }
 polkavm = "0.9.3"
 polkavm-linker = "0.9.2"
 polkavm-derive = "0.9.1"
@@ -101,7 +102,8 @@ sp-application-crypto = { git="https://github.com/paritytech/polkadot-sdk", bran
 sp-core = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
 sp-keystore = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
 sp-runtime = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
-
+sp-consensus-babe = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
+sc-service = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 [profile.release]
 # Polkadot runtime requires unwinding.
 panic = "unwind"
