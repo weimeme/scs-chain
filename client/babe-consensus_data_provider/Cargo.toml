@@ -18,6 +18,7 @@ sp-runtime = { workspace = true }
 sp-consensus-babe = { features = ["serde"], workspace = true }
 scale-info = { features = ["derive", "serde"], workspace = true }
 sc-service = { workspace = true }
+sc-client-api = { workspace = true }
 
 fc-rpc = { workspace = true, features = [
     "rpc-binary-search-estimate",

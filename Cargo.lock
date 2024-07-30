@@ -821,6 +821,7 @@ name = "babe-consensus_data_provider"
 version = "0.1.0"
 dependencies = [
  "fc-rpc",
+ "sc-client-api",
  "sc-service",
  "scale-info",
  "sp-api",
