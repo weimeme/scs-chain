@@ -60,9 +60,9 @@ impl<B: sp_runtime::traits::Block<Hash = sp_core::H256>, C: Send + Sync + Provid
         parent: &B::Header,
         _data: &InherentData,
     ) -> Result<Digest, sp_inherents::Error> {
-        let hash: sp_core::H256 = parent.hash();
+        let best_block_hash: sp_core::H256 = parent.hash();
         let runtime_api = self.client.runtime_api();
-        let babe_config: BabeConfiguration = runtime_api.configuration(hash).unwrap();
+        let babe_config: BabeConfiguration = runtime_api.configuration(best_block_hash).unwrap();
 
         todo!()
     }
