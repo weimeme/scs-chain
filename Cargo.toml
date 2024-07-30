@@ -9,6 +9,7 @@ homepage = "https://paritytech.github.io/polkadot-sdk/master/polkadot_sdk_docs/i
 resolver = "2"
 
 members = [
+    "client/babe-consensus_data_provider",
 #    "node/cli",
 #    "node/inspect",
     "node/primitives",
@@ -94,6 +95,12 @@ pallet-evm-test-vector-support = { git="https://github.com/ChainSupport/frontier
 pallet-hotfix-sufficients = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
 # Frontier Utility
 precompile-utils = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
+
+sp-api = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
+sp-application-crypto = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
+sp-core = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
+sp-keystore = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
+sp-runtime = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
 
 [profile.release]
 # Polkadot runtime requires unwinding.
