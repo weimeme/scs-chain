@@ -68,7 +68,7 @@ use sc_client_api::{client::BlockchainEvents, UsageProvider, backend::StoragePro
 // use sc_consensus_grandpa_rpc::GrandpaApi;
 
 /// Extra dependencies for BABE.
-pub struct BabeDeps<Block: BlockT> {
+pub struct BabeDeps {
 	/// A handle to the BABE worker for issuing requests.
 	pub babe_worker_handle: BabeWorkerHandle<Block>,
 	/// The keystore that manages the keys of the node.
@@ -76,11 +76,11 @@ pub struct BabeDeps<Block: BlockT> {
 }
 
 /// Extra dependencies for GRANDPA
-pub struct GrandpaDeps<B, Block: BlockT> {
+pub struct GrandpaDeps<B> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
-	pub shared_authority_set: SharedAuthoritySet<Block::Hash, NumberFor<Block>>,
+	pub shared_authority_set: SharedAuthoritySet<Hash, BlockNumber>,
 	/// Receives notifications about justification events from Grandpa.
 	pub justification_stream: GrandpaJustificationStream<Block>,
 	/// Executor to drive the subscription manager in the Grandpa RPC handler.
@@ -90,7 +90,7 @@ pub struct GrandpaDeps<B, Block: BlockT> {
 }
 
 /// Dependencies for BEEFY
-pub struct BeefyDeps<AuthorityId: AuthorityIdBound, Block: BlockT> {
+pub struct BeefyDeps<AuthorityId: AuthorityIdBound> {
 	/// Receives notifications about finality proof events from BEEFY.
 	pub beefy_finality_proof_stream: BeefyVersionedFinalityProofStream<Block, AuthorityId>,
 	/// Receives notifications about best block events from BEEFY.
@@ -100,7 +100,7 @@ pub struct BeefyDeps<AuthorityId: AuthorityIdBound, Block: BlockT> {
 }
 
 /// Full client dependencies.
-pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, Block: BlockT> {
+pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
 	/// The client instance to use.
 	pub client: Arc<C>,
 	/// Transaction pool instance.
@@ -112,11 +112,11 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, Block: BlockT> {
 	/// Whether to deny unsafe calls
 	pub deny_unsafe: DenyUnsafe,
 	/// BABE specific dependencies.
-	pub babe: BabeDeps<Block>,
+	pub babe: BabeDeps,
 	/// GRANDPA specific dependencies.
-	pub grandpa: GrandpaDeps<B, Block>,
+	pub grandpa: GrandpaDeps<B>,
 	/// BEEFY specific dependencies.
-	pub beefy: BeefyDeps<AuthorityId, Block>,
+	pub beefy: BeefyDeps<AuthorityId>,
 	/// Shared statement store reference.
 	pub statement_store: Arc<dyn sp_statement_store::StatementStore>,
 	/// The backend used by the node.
@@ -126,7 +126,7 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, Block: BlockT> {
 }
 
 /// Instantiate all Full RPC extensions.
-pub fn create_full<C, P, SC, B, AuthorityId, Block>(
+pub fn create_full<C, P, SC, B, AuthorityId>(
 	FullDeps {
 		client,
 		pool,
@@ -139,10 +139,10 @@ pub fn create_full<C, P, SC, B, AuthorityId, Block>(
 		statement_store,
 		backend,
 		mixnet_api,
-	}: FullDeps<C, P, SC, B, AuthorityId, Block>,
+	}: FullDeps<C, P, SC, B, AuthorityId>,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
-	Block: BlockT,
+	// Block: BlockT,
 	C: ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
 		+ CallApiAt<Block>
@@ -221,17 +221,17 @@ where
 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
 			.into_rpc(),
 	)?;
-	// // todo
-	// io.merge(
-	// 	Grandpa::new(
-	// 		subscription_executor,
-	// 		shared_authority_set.clone(),
-	// 		shared_voter_state,
-	// 		justification_stream,
-	// 		finality_provider,
-	// 	)
-	// 	.into_rpc(),
-	// )?;
+	// todo
+	io.merge(
+		Grandpa::new(
+			subscription_executor,
+			shared_authority_set.clone(),
+			shared_voter_state,
+			justification_stream,
+			finality_provider,
+		)
+		.into_rpc(),
+	)?;
 
 	io.merge(
 		SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
