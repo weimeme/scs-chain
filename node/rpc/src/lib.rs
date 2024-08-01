@@ -55,6 +55,7 @@ use sp_consensus_babe::BabeApi;
 use sp_consensus_beefy::AuthorityIdBound;
 use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Block as BlockT;
+use sc_client_api::{client::BlockchainEvents, UsageProvider, backend::StorageProvider};
 
 /// Extra dependencies for BABE.
 pub struct BabeDeps {
@@ -69,7 +70,7 @@ pub struct GrandpaDeps<B, Block: BlockT> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
-	pub shared_authority_set: SharedAuthoritySet<Hash, BlockNumber>,
+	pub shared_authority_set: SharedAuthoritySet<Block::Hash, BlockNumber>,
 	/// Receives notifications about justification events from Grandpa.
 	pub justification_stream: GrandpaJustificationStream<Block>,
 	/// Executor to drive the subscription manager in the Grandpa RPC handler.
@@ -142,18 +143,19 @@ where
 		+ Send
 		+ 'static,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
-	C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
+	// C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
-	C::Api: sc_consensus_babe::BabeApi<Block>,
+	// C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
-	P: TransactionPool + 'static,
+	C: BlockchainEvents<Block> + UsageProvider<Block> + StorageProvider<Block, B>,
+	P: TransactionPool<Block=Block> + 'static,
 	SC: SelectChain<Block> + 'static,
 	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashingFor<Block>>,
 	AuthorityId: AuthorityIdBound,
 	<AuthorityId as RuntimeAppPublic>::Signature: Send + Sync,
 {
-	use mmr_rpc::{Mmr, MmrApiServer};
+	// use mmr_rpc::{Mmr, MmrApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use sc_consensus_babe_rpc::{Babe, BabeApiServer};
 	use sc_consensus_beefy_rpc::{Beefy, BeefyApiServer};
@@ -164,23 +166,22 @@ where
 		statement::StatementApiServer,
 	};
 	use sc_rpc_spec_v2::chain_spec::{ChainSpec, ChainSpecApiServer};
-	use sc_sync_state_rpc::{SyncState, SyncStateApiServer};
+	// use sc_sync_state_rpc::{SyncState, SyncStateApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
-	use substrate_state_trie_migration_rpc::{StateMigration, StateMigrationApiServer};
+	// use substrate_state_trie_migration_rpc::{StateMigration, StateMigrationApiServer};
 
 	let mut io = RpcModule::new(());
-
-	let BabeDeps { keystore, babe_worker_handle } = babe;
-	let GrandpaDeps {
-		shared_voter_state,
-		shared_authority_set,
-		justification_stream,
-		subscription_executor,
-		finality_provider,
-	} = grandpa;
-
+	//
+	// let GrandpaDeps {
+	// 	shared_voter_state,
+	// 	shared_authority_set,
+	// 	justification_stream,
+	// 	subscription_executor,
+	// 	finality_provider,
+	// } = grandpa;
+	//
 	let chain_name = chain_spec.name().to_string();
-	let genesis_hash = client.block_hash(0.into()).ok().flatten().expect("Genesis block exists; qed");
+	let genesis_hash = client.block_hash(0u32.into()).ok().flatten().expect("Genesis block exists; qed");
 	let properties = chain_spec.properties();
 	io.merge(ChainSpec::new(chain_name, genesis_hash, properties).into_rpc())?;
 
@@ -188,55 +189,57 @@ where
 	// Making synchronous calls in light client freezes the browser currently,
 	// more context: https://github.com/paritytech/substrate/pull/3480
 	// These RPCs should use an asynchronous caller instead.
-	io.merge(
-		Mmr::new(
-			client.clone(),
-			backend
-				.offchain_storage()
-				.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
-		)
-		.into_rpc(),
-	)?;
+	// io.merge(
+	// 	Mmr::new(
+	// 		client.clone(),
+	// 		backend
+	// 			.offchain_storage()
+	// 			.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
+	// 	)
+	// 	.into_rpc(),
+	// )?;
+
 	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-	io.merge(
-		Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
-			.into_rpc(),
-	)?;
-	io.merge(
-		Grandpa::new(
-			subscription_executor,
-			shared_authority_set.clone(),
-			shared_voter_state,
-			justification_stream,
-			finality_provider,
-		)
-		.into_rpc(),
-	)?;
-
-	io.merge(
-		SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
-			.into_rpc(),
-	)?;
-
-	io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
-	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
-	let statement_store =
-		sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
-	io.merge(statement_store)?;
-
-	if let Some(mixnet_api) = mixnet_api {
-		let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
-		io.merge(mixnet)?;
-	}
-
-	io.merge(
-		Beefy::<Block, AuthorityId>::new(
-			beefy.beefy_finality_proof_stream,
-			beefy.beefy_best_block_stream,
-			beefy.subscription_executor,
-		)?
-		.into_rpc(),
-	)?;
+	// let BabeDeps { keystore, babe_worker_handle } = babe;
+	// io.merge(
+	// 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
+	// 		.into_rpc(),
+	// )?;
+	// io.merge(
+	// 	Grandpa::new(
+	// 		subscription_executor,
+	// 		shared_authority_set.clone(),
+	// 		shared_voter_state,
+	// 		justification_stream,
+	// 		finality_provider,
+	// 	)
+	// 	.into_rpc(),
+	// )?;
+	//
+	// // io.merge(
+	// // 	SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
+	// // 		.into_rpc(),
+	// // )?;
+	//
+	// // io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
+	// io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
+	// let statement_store =
+	// 	sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
+	// io.merge(statement_store)?;
+	//
+	// if let Some(mixnet_api) = mixnet_api {
+	// 	let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
+	// 	io.merge(mixnet)?;
+	// }
+	//
+	// io.merge(
+	// 	Beefy::<Block, AuthorityId>::new(
+	// 		beefy.beefy_finality_proof_stream,
+	// 		beefy.beefy_best_block_stream,
+	// 		beefy.subscription_executor,
+	// 	)?
+	// 	.into_rpc(),
+	// )?;
 
 	Ok(io)
 }
