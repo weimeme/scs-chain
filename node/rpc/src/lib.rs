@@ -40,9 +40,11 @@ use sc_consensus_babe::BabeWorkerHandle;
 use sc_consensus_beefy::communication::notification::{
 	BeefyBestBlockStream, BeefyVersionedFinalityProofStream,
 };
+use sc_transaction_pool::{ChainApi, Pool};
 use sc_consensus_grandpa::{
 	FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
 };
+use sp_runtime::traits::{Header as HeaderT, Hash as HashT};
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 pub use sc_rpc::SubscriptionTaskExecutor;
 pub use sc_rpc_api::DenyUnsafe;
@@ -56,10 +58,11 @@ use sp_consensus_babe::BabeApi;
 use sp_consensus_beefy::AuthorityIdBound;
 use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Block as BlockT;
+use sp_blockchain::Backend as BlockchainBackend;
 use sc_client_api::{client::BlockchainEvents, UsageProvider, backend::StorageProvider};
 
 /// Extra dependencies for BABE.
-pub struct BabeDeps {
+pub struct BabeDeps<Block: BlockT> {
 	/// A handle to the BABE worker for issuing requests.
 	pub babe_worker_handle: BabeWorkerHandle<Block>,
 	/// The keystore that manages the keys of the node.
@@ -71,7 +74,7 @@ pub struct GrandpaDeps<B, Block: BlockT> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
-	pub shared_authority_set: SharedAuthoritySet<Block::Hash, BlockNumber>,
+	pub shared_authority_set: SharedAuthoritySet<<Block as BlockT>::Hash, <<Block as BlockT>::Header as HeaderT>::Number>,
 	/// Receives notifications about justification events from Grandpa.
 	pub justification_stream: GrandpaJustificationStream<Block>,
 	/// Executor to drive the subscription manager in the Grandpa RPC handler.
@@ -103,7 +106,7 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, Block: BlockT> {
 	/// Whether to deny unsafe calls
 	pub deny_unsafe: DenyUnsafe,
 	/// BABE specific dependencies.
-	pub babe: BabeDeps,
+	pub babe: BabeDeps<Block>,
 	/// GRANDPA specific dependencies.
 	pub grandpa: GrandpaDeps<B, Block>,
 	/// BEEFY specific dependencies.
@@ -149,11 +152,15 @@ where
 	C::Api: sp_consensus_aura::AuraApi<Block, AuraId>,
 	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
+	C::Api: sp_api::ApiExt<Block>,
+	C::Api: fp_rpc::ConvertTransactionRuntimeApi<Block>,
+	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	C: BlockchainEvents<Block> + UsageProvider<Block> + StorageProvider<Block, B>,
 	P: TransactionPool<Block=Block> + 'static,
 	SC: SelectChain<Block> + 'static,
 	B: sc_client_api::Backend<Block> + Send + Sync + 'static,
 	B::State: sc_client_api::backend::StateBackend<sp_runtime::traits::HashingFor<Block>>,
+	B::Blockchain: BlockchainBackend<Block>,
 	AuthorityId: AuthorityIdBound,
 	<AuthorityId as RuntimeAppPublic>::Signature: Send + Sync,
 {
@@ -168,20 +175,20 @@ where
 		statement::StatementApiServer,
 	};
 	use sc_rpc_spec_v2::chain_spec::{ChainSpec, ChainSpecApiServer};
-	// use sc_sync_state_rpc::{SyncState, SyncStateApiServer};
+	use sc_sync_state_rpc::{SyncState, SyncStateApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
-	// use substrate_state_trie_migration_rpc::{StateMigration, StateMigrationApiServer};
+	use substrate_state_trie_migration_rpc::{StateMigration, StateMigrationApiServer};
 
 	let mut io = RpcModule::new(());
-	//
-	// let GrandpaDeps {
-	// 	shared_voter_state,
-	// 	shared_authority_set,
-	// 	justification_stream,
-	// 	subscription_executor,
-	// 	finality_provider,
-	// } = grandpa;
-	//
+
+	let GrandpaDeps {
+		shared_voter_state,
+		shared_authority_set,
+		justification_stream,
+		subscription_executor,
+		finality_provider,
+	} = grandpa;
+
 	let chain_name = chain_spec.name().to_string();
 	let genesis_hash = client.block_hash(0u32.into()).ok().flatten().expect("Genesis block exists; qed");
 	let properties = chain_spec.properties();
@@ -203,10 +210,10 @@ where
 
 	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
 	let BabeDeps { keystore, babe_worker_handle } = babe;
-	// io.merge(
-	// 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
-	// 		.into_rpc(),
-	// )?;
+	io.merge(
+	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
+			.into_rpc(),
+	)?;
 	// io.merge(
 	// 	Grandpa::new(
 	// 		subscription_executor,
@@ -217,31 +224,31 @@ where
 	// 	)
 	// 	.into_rpc(),
 	// )?;
+
+	io.merge(
+		SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
+			.into_rpc(),
+	)?;
 	//
-	// // io.merge(
-	// // 	SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
-	// // 		.into_rpc(),
-	// // )?;
-	//
-	// // io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
-	// io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
-	// let statement_store =
-	// 	sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
-	// io.merge(statement_store)?;
-	//
-	// if let Some(mixnet_api) = mixnet_api {
-	// 	let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
-	// 	io.merge(mixnet)?;
-	// }
-	//
-	// io.merge(
-	// 	Beefy::<Block, AuthorityId>::new(
-	// 		beefy.beefy_finality_proof_stream,
-	// 		beefy.beefy_best_block_stream,
-	// 		beefy.subscription_executor,
-	// 	)?
-	// 	.into_rpc(),
-	// )?;
+	io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
+	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
+	let statement_store =
+		sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
+	io.merge(statement_store)?;
+
+	if let Some(mixnet_api) = mixnet_api {
+		let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
+		io.merge(mixnet)?;
+	}
+
+	io.merge(
+		Beefy::<Block, AuthorityId>::new(
+			beefy.beefy_finality_proof_stream,
+			beefy.beefy_best_block_stream,
+			beefy.subscription_executor,
+		)?
+		.into_rpc(),
+	)?;
 
 	Ok(io)
 }

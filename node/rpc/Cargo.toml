@@ -19,6 +19,9 @@ targets = ["x86_64-unknown-linux-gnu"]
 jsonrpsee = { version = "0.22", features = ["server"] }
 kitchensink-runtime = { path = "../runtime" }
 
+fp-rpc = { workspace = true,  features = ["std"]}
+
+sc-transaction-pool = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 sp-consensus-aura = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 pallet-transaction-payment-rpc = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 mmr-rpc = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
