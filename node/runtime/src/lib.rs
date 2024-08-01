@@ -771,6 +771,29 @@ impl pallet_authorship::Config for Runtime {
 	type EventHandler = (Staking, ImOnline);
 }
 
+pub mod opaque {
+	use super::*;
+
+	pub use sp_runtime::OpaqueExtrinsic as UncheckedExtrinsic;
+
+	/// Opaque block header type.
+	pub type Header = generic::Header<BlockNumber, BlakeTwo256>;
+	/// Opaque block type.
+	pub type Block = generic::Block<Header, UncheckedExtrinsic>;
+	/// Opaque block identifier type.
+	pub type BlockId = generic::BlockId<Block>;
+
+	pub struct SessionKeys {
+		pub grandpa: Grandpa,
+		pub babe: Babe,
+		pub im_online: ImOnline,
+		pub authority_discovery: AuthorityDiscovery,
+		pub mixnet: Mixnet,
+		pub beefy: Beefy,
+	}
+}
+
+
 impl_opaque_keys! {
 	pub struct SessionKeys {
 		pub grandpa: Grandpa,

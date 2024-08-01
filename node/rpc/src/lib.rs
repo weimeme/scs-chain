@@ -64,6 +64,7 @@ use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Block as BlockT;
 use sp_blockchain::Backend as BlockchainBackend;
 use sc_client_api::{client::BlockchainEvents, UsageProvider, backend::StorageProvider};
+// use sc_consensus_grandpa_rpc::GrandpaApi;
 
 /// Extra dependencies for BABE.
 pub struct BabeDeps<Block: BlockT> {
@@ -78,7 +79,7 @@ pub struct GrandpaDeps<B, Block: BlockT> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
-	pub shared_authority_set: SharedAuthoritySet<<Block as BlockT>::Hash, NumberFor<Block>>,
+	pub shared_authority_set: SharedAuthoritySet<Block::Hash, NumberFor<Block>>,
 	/// Receives notifications about justification events from Grandpa.
 	pub justification_stream: GrandpaJustificationStream<Block>,
 	/// Executor to drive the subscription manager in the Grandpa RPC handler.
@@ -158,7 +159,6 @@ where
 	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	C::Api: sp_api::ApiExt<Block>,
-	C::Api: GrandpaApi<Block>,
 	C::Api: fp_rpc::ConvertTransactionRuntimeApi<Block>,
 	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	C: BlockchainEvents<Block> + UsageProvider<Block> + StorageProvider<Block, B>,
@@ -220,7 +220,7 @@ where
 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
 			.into_rpc(),
 	)?;
-	// todo
+	// // todo
 	// io.merge(
 	// 	Grandpa::new(
 	// 		subscription_executor,
