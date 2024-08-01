@@ -65,7 +65,7 @@ pub struct BabeDeps {
 }
 
 /// Extra dependencies for GRANDPA
-pub struct GrandpaDeps<B> {
+pub struct GrandpaDeps<B, Block: BlockT> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
@@ -79,7 +79,7 @@ pub struct GrandpaDeps<B> {
 }
 
 /// Dependencies for BEEFY
-pub struct BeefyDeps<AuthorityId: AuthorityIdBound> {
+pub struct BeefyDeps<AuthorityId: AuthorityIdBound, Block: BlockT> {
 	/// Receives notifications about finality proof events from BEEFY.
 	pub beefy_finality_proof_stream: BeefyVersionedFinalityProofStream<Block, AuthorityId>,
 	/// Receives notifications about best block events from BEEFY.
@@ -89,7 +89,7 @@ pub struct BeefyDeps<AuthorityId: AuthorityIdBound> {
 }
 
 /// Full client dependencies.
-pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
+pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, Block: BlockT> {
 	/// The client instance to use.
 	pub client: Arc<C>,
 	/// Transaction pool instance.
@@ -103,9 +103,9 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
 	/// BABE specific dependencies.
 	pub babe: BabeDeps,
 	/// GRANDPA specific dependencies.
-	pub grandpa: GrandpaDeps<B>,
+	pub grandpa: GrandpaDeps<B, Block>,
 	/// BEEFY specific dependencies.
-	pub beefy: BeefyDeps<AuthorityId>,
+	pub beefy: BeefyDeps<AuthorityId, Block>,
 	/// Shared statement store reference.
 	pub statement_store: Arc<dyn sp_statement_store::StatementStore>,
 	/// The backend used by the node.
@@ -115,7 +115,7 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
 }
 
 /// Instantiate all Full RPC extensions.
-pub fn create_full<C, P, SC, B, AuthorityId>(
+pub fn create_full<C, P, SC, B, AuthorityId, Block>(
 	FullDeps {
 		client,
 		pool,
@@ -128,9 +128,10 @@ pub fn create_full<C, P, SC, B, AuthorityId>(
 		statement_store,
 		backend,
 		mixnet_api,
-	}: FullDeps<C, P, SC, B, AuthorityId>,
+	}: FullDeps<C, P, SC, B, AuthorityId, Block>,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
+	Block: BlockT,
 	C: ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
 		+ CallApiAt<Block>
@@ -169,73 +170,73 @@ where
 
 	let mut io = RpcModule::new(());
 
-	let BabeDeps { keystore, babe_worker_handle } = babe;
-	let GrandpaDeps {
-		shared_voter_state,
-		shared_authority_set,
-		justification_stream,
-		subscription_executor,
-		finality_provider,
-	} = grandpa;
-
-	let chain_name = chain_spec.name().to_string();
-	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
-	let properties = chain_spec.properties();
-	io.merge(ChainSpec::new(chain_name, genesis_hash, properties).into_rpc())?;
-
-	io.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
-	// Making synchronous calls in light client freezes the browser currently,
-	// more context: https://github.com/paritytech/substrate/pull/3480
-	// These RPCs should use an asynchronous caller instead.
-	io.merge(
-		Mmr::new(
-			client.clone(),
-			backend
-				.offchain_storage()
-				.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
-		)
-		.into_rpc(),
-	)?;
-	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-	io.merge(
-		Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
-			.into_rpc(),
-	)?;
-	io.merge(
-		Grandpa::new(
-			subscription_executor,
-			shared_authority_set.clone(),
-			shared_voter_state,
-			justification_stream,
-			finality_provider,
-		)
-		.into_rpc(),
-	)?;
-
-	io.merge(
-		SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
-			.into_rpc(),
-	)?;
-
-	io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
-	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
-	let statement_store =
-		sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
-	io.merge(statement_store)?;
-
-	if let Some(mixnet_api) = mixnet_api {
-		let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
-		io.merge(mixnet)?;
-	}
-
-	io.merge(
-		Beefy::<Block, AuthorityId>::new(
-			beefy.beefy_finality_proof_stream,
-			beefy.beefy_best_block_stream,
-			beefy.subscription_executor,
-		)?
-		.into_rpc(),
-	)?;
+	// let BabeDeps { keystore, babe_worker_handle } = babe;
+	// let GrandpaDeps {
+	// 	shared_voter_state,
+	// 	shared_authority_set,
+	// 	justification_stream,
+	// 	subscription_executor,
+	// 	finality_provider,
+	// } = grandpa;
+	//
+	// let chain_name = chain_spec.name().to_string();
+	// let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
+	// let properties = chain_spec.properties();
+	// io.merge(ChainSpec::new(chain_name, genesis_hash, properties).into_rpc())?;
+	//
+	// io.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
+	// // Making synchronous calls in light client freezes the browser currently,
+	// // more context: https://github.com/paritytech/substrate/pull/3480
+	// // These RPCs should use an asynchronous caller instead.
+	// io.merge(
+	// 	Mmr::new(
+	// 		client.clone(),
+	// 		backend
+	// 			.offchain_storage()
+	// 			.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
+	// 	)
+	// 	.into_rpc(),
+	// )?;
+	// io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
+	// io.merge(
+	// 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
+	// 		.into_rpc(),
+	// )?;
+	// io.merge(
+	// 	Grandpa::new(
+	// 		subscription_executor,
+	// 		shared_authority_set.clone(),
+	// 		shared_voter_state,
+	// 		justification_stream,
+	// 		finality_provider,
+	// 	)
+	// 	.into_rpc(),
+	// )?;
+	//
+	// io.merge(
+	// 	SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
+	// 		.into_rpc(),
+	// )?;
+	//
+	// io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
+	// io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
+	// let statement_store =
+	// 	sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
+	// io.merge(statement_store)?;
+	//
+	// if let Some(mixnet_api) = mixnet_api {
+	// 	let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
+	// 	io.merge(mixnet)?;
+	// }
+	//
+	// io.merge(
+	// 	Beefy::<Block, AuthorityId>::new(
+	// 		beefy.beefy_finality_proof_stream,
+	// 		beefy.beefy_best_block_stream,
+	// 		beefy.subscription_executor,
+	// 	)?
+	// 	.into_rpc(),
+	// )?;
 
 	Ok(io)
 }
