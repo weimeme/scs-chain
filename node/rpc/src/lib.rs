@@ -154,7 +154,7 @@ where
 		+ Send
 		+ 'static,
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
-	// C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
+	C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
 	C::Api: sp_consensus_aura::AuraApi<Block, AuraId>,
 	C::Api: sc_consensus_babe::BabeApi<Block>,
@@ -171,7 +171,7 @@ where
 	AuthorityId: AuthorityIdBound,
 	<AuthorityId as RuntimeAppPublic>::Signature: Send + Sync,
 {
-	// use mmr_rpc::{Mmr, MmrApiServer};
+	use mmr_rpc::{Mmr, MmrApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
 	use sc_consensus_babe_rpc::{Babe, BabeApiServer};
 	use sc_consensus_beefy_rpc::{Beefy, BeefyApiServer};
@@ -205,15 +205,15 @@ where
 	// Making synchronous calls in light client freezes the browser currently,
 	// more context: https://github.com/paritytech/substrate/pull/3480
 	// These RPCs should use an asynchronous caller instead.
-	// io.merge(
-	// 	Mmr::new(
-	// 		client.clone(),
-	// 		backend
-	// 			.offchain_storage()
-	// 			.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
-	// 	)
-	// 	.into_rpc(),
-	// )?;
+	io.merge(
+		Mmr::new(
+			client.clone(),
+			backend
+				.offchain_storage()
+				.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
+		)
+		.into_rpc(),
+	)?;
 
 	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
 	let BabeDeps { keystore, babe_worker_handle } = babe;
