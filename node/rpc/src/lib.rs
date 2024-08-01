@@ -32,6 +32,7 @@
 #![warn(unused_crate_dependencies)]
 
 use std::sync::Arc;
+// use sc_consensus_grandpa_rpc::finality::RpcFinalityProofProvider;
 
 use jsonrpsee::RpcModule;
 use kitchensink_runtime::{AccountId, Balance, Block, BlockNumber, Hash, Nonce};
@@ -45,6 +46,7 @@ use sc_transaction_pool::{ChainApi, Pool};
 use sc_consensus_grandpa::{
 	FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
 };
+use sc_consensus_grandpa::GrandpaApi;
 use sp_runtime::traits::NumberFor;
 use sp_runtime::traits::{Header as HeaderT, Hash as HashT};
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
@@ -145,6 +147,7 @@ where
 		+ HeaderBackend<Block>
 		+ AuxStore
 		+ HeaderMetadata<Block, Error = BlockChainError>
+		// + RpcFinalityProofProvider<Block>
 		+ Sync
 		+ Send
 		+ 'static,
@@ -155,6 +158,7 @@ where
 	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	C::Api: sp_api::ApiExt<Block>,
+	C::Api: GrandpaApi<Block>,
 	C::Api: fp_rpc::ConvertTransactionRuntimeApi<Block>,
 	C::Api: fp_rpc::EthereumRuntimeRPCApi<Block>,
 	C: BlockchainEvents<Block> + UsageProvider<Block> + StorageProvider<Block, B>,
@@ -216,6 +220,7 @@ where
 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
 			.into_rpc(),
 	)?;
+	// todo
 	// io.merge(
 	// 	Grandpa::new(
 	// 		subscription_executor,
