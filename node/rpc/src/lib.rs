@@ -43,6 +43,7 @@ use sc_consensus_beefy::communication::notification::{
 use sc_consensus_grandpa::{
 	FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
 };
+use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 pub use sc_rpc::SubscriptionTaskExecutor;
 pub use sc_rpc_api::DenyUnsafe;
 use sc_transaction_pool_api::TransactionPool;
@@ -145,7 +146,8 @@ where
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	// C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
-	// C::Api: sc_consensus_babe::BabeApi<Block>,
+	C::Api: sp_consensus_aura::AuraApi<Block, AuraId>,
+	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	C: BlockchainEvents<Block> + UsageProvider<Block> + StorageProvider<Block, B>,
 	P: TransactionPool<Block=Block> + 'static,
@@ -200,7 +202,7 @@ where
 	// )?;
 
 	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
-	// let BabeDeps { keystore, babe_worker_handle } = babe;
+	let BabeDeps { keystore, babe_worker_handle } = babe;
 	// io.merge(
 	// 	Babe::new(client.clone(), babe_worker_handle.clone(), keystore, select_chain, deny_unsafe)
 	// 		.into_rpc(),
