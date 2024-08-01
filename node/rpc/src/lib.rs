@@ -40,10 +40,12 @@ use sc_consensus_babe::BabeWorkerHandle;
 use sc_consensus_beefy::communication::notification::{
 	BeefyBestBlockStream, BeefyVersionedFinalityProofStream,
 };
+use sp_runtime::traits::HashingFor;
 use sc_transaction_pool::{ChainApi, Pool};
 use sc_consensus_grandpa::{
 	FinalityProofProvider, GrandpaJustificationStream, SharedAuthoritySet, SharedVoterState,
 };
+use sp_runtime::traits::NumberFor;
 use sp_runtime::traits::{Header as HeaderT, Hash as HashT};
 use sp_consensus_aura::sr25519::AuthorityId as AuraId;
 pub use sc_rpc::SubscriptionTaskExecutor;
@@ -74,7 +76,7 @@ pub struct GrandpaDeps<B, Block: BlockT> {
 	/// Voting round info.
 	pub shared_voter_state: SharedVoterState,
 	/// Authority set info.
-	pub shared_authority_set: SharedAuthoritySet<<Block as BlockT>::Hash, <<Block as BlockT>::Header as HeaderT>::Number>,
+	pub shared_authority_set: SharedAuthoritySet<<Block as BlockT>::Hash, NumberFor<Block>>,
 	/// Receives notifications about justification events from Grandpa.
 	pub justification_stream: GrandpaJustificationStream<Block>,
 	/// Executor to drive the subscription manager in the Grandpa RPC handler.
@@ -136,7 +138,7 @@ pub fn create_full<C, P, SC, B, AuthorityId, Block>(
 	}: FullDeps<C, P, SC, B, AuthorityId, Block>,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
-	Block: BlockT<Hash = Hash>,
+	Block: BlockT,
 	C: ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
 		+ CallApiAt<Block>
