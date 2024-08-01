@@ -46,7 +46,7 @@ use sc_consensus_grandpa::{
 pub use sc_rpc::SubscriptionTaskExecutor;
 pub use sc_rpc_api::DenyUnsafe;
 use sc_transaction_pool_api::TransactionPool;
-use sp_api::ProvideRuntimeApi;
+use sp_api::{ProvideRuntimeApi, CallApiAt};
 use sp_application_crypto::RuntimeAppPublic;
 use sp_block_builder::BlockBuilder;
 use sp_blockchain::{Error as BlockChainError, HeaderBackend, HeaderMetadata};
@@ -54,6 +54,7 @@ use sp_consensus::SelectChain;
 use sp_consensus_babe::BabeApi;
 use sp_consensus_beefy::AuthorityIdBound;
 use sp_keystore::KeystorePtr;
+use sp_runtime::traits::Block as BlockT;
 
 /// Extra dependencies for BABE.
 pub struct BabeDeps {
@@ -132,6 +133,7 @@ pub fn create_full<C, P, SC, B, AuthorityId>(
 where
 	C: ProvideRuntimeApi<Block>
 		+ sc_client_api::BlockBackend<Block>
+		+ CallApiAt<Block>
 		+ HeaderBackend<Block>
 		+ AuxStore
 		+ HeaderMetadata<Block, Error = BlockChainError>
@@ -141,7 +143,7 @@ where
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
-	C::Api: BabeApi<Block>,
+	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	P: TransactionPool + 'static,
 	SC: SelectChain<Block> + 'static,
