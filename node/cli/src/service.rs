@@ -24,6 +24,7 @@ use polkadot_sdk::{
 	sc_consensus_beefy as beefy, sc_consensus_grandpa as grandpa,
 	sp_consensus_beefy as beefy_primitives, *,
 };
+use fc_consensus::FrontierBlockImport;
 use crate::eth::EthConfiguration;
 use crate::Cli;
 use codec::Encode;
@@ -244,7 +245,7 @@ pub fn new_partial(
 		telemetry.as_ref().map(|x| x.handle()),
 	)?;
 
-	// fixme 这里可能需要一个
+	// // fixme 这里可能需要一个
 	// let frontier_block_import =
 	// 	FrontierBlockImport::new(grandpa_block_import.clone(), client.clone());
 

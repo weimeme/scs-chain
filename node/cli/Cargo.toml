@@ -94,6 +94,8 @@ substrate-cli-test-utils = { git="https://github.com/paritytech/polkadot-sdk", b
 sc-service-test = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 #scale-codec = { package = "parity-scale-codec", version = "3.6.4", default-features = false, features = ["derive"] }
 sp-runtime =  { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
+fc-consensus = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
+
 
 [build-dependencies]
 clap = { version = "4.5.3", optional = true }
