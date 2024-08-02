@@ -187,7 +187,7 @@ pub fn new_partial(
 				sc_consensus_babe::BabeBlockImport<
 					Block,
 					FullClient,
-					FullBeefyBlockImport<FullGrandpaBlockImport>,
+					FullBeefyBlockImport<FrontierBlockImport<Block, FullGrandpaBlockImport, FullClient>>,
 				>,
 				grandpa::LinkHalf<Block, FullClient, FullSelectChain>,
 				sc_consensus_babe::BabeLink<Block>,
@@ -245,15 +245,15 @@ pub fn new_partial(
 		telemetry.as_ref().map(|x| x.handle()),
 	)?;
 
-	// // fixme 这里可能需要一个
-	// let frontier_block_import =
-	// 	FrontierBlockImport::new(grandpa_block_import.clone(), client.clone());
+	// fixme 这里可能需要一个
+	let frontier_block_import =
+		FrontierBlockImport::new(grandpa_block_import.clone(), client.clone());
 
 	let justification_import = grandpa_block_import.clone();
 
 	let (beefy_block_import, beefy_voter_links, beefy_rpc_links) =
 		beefy::beefy_block_import_and_links(
-			grandpa_block_import,
+			frontier_block_import,
 			backend.clone(),
 			client.clone(),
 			config.prometheus_registry().cloned(),
@@ -382,7 +382,6 @@ pub fn new_partial(
 					statement_store: rpc_statement_store.clone(),
 					backend: rpc_backend.clone(),
 					mixnet_api: mixnet_api.as_ref().cloned(),
-					// _a: std::marker::PhantomData,
 					// eth: eth_deps,
 				};
 
@@ -436,7 +435,7 @@ pub fn new_full_base<N: NetworkBackend<Block, <Block as BlockT>::Hash>>(
 		&sc_consensus_babe::BabeBlockImport<
 			Block,
 			FullClient,
-			FullBeefyBlockImport<FullGrandpaBlockImport>,
+			FullBeefyBlockImport<FrontierBlockImport<Block, FullGrandpaBlockImport, FullClient>>,
 		>,
 		&sc_consensus_babe::BabeLink<Block>,
 	),
