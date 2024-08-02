@@ -31,6 +31,8 @@
 #![warn(missing_docs)]
 #![warn(unused_crate_dependencies)]
 
+mod eth;
+
 use std::sync::Arc;
 // use sc_consensus_grandpa_rpc::finality::RpcFinalityProofProvider;
 
