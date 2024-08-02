@@ -105,7 +105,8 @@ pub struct BeefyDeps<AuthorityId: AuthorityIdBound> {
 }
 
 /// Full client dependencies.
-pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, A: ChainApi, CT, CIDP> {
+/// A: ChainApi, CT, CIDP
+pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
 	/// The client instance to use.
 	pub client: Arc<C>,
 	/// Transaction pool instance.
@@ -128,7 +129,7 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, A: ChainApi, CT,
 	pub backend: Arc<B>,
 	/// Mixnet API.
 	pub mixnet_api: Option<sc_mixnet::Api>,
-	pub eth: EthDeps<C, P, A, CT, CIDP>,
+	// pub eth: EthDeps<C, P, A, CT, CIDP>,
 }
 
 pub struct DefaultEthConfig<C, BE>(std::marker::PhantomData<(C, BE)>);
@@ -145,14 +146,14 @@ impl<B, C, BE> fc_rpc::EthConfig<B, C> for DefaultEthConfig<C, BE>
 }
 
 /// Instantiate all Full RPC extensions.
-pub fn create_full<C, P, SC, B, AuthorityId, A, CT, CIDP>(
-	deps: FullDeps<C, P, SC, B, AuthorityId, A, CT, CIDP>,
-	subscription_task_executor: SubscriptionTaskExecutor,
-	pubsub_notification_sinks: Arc<
-		fc_mapping_sync::EthereumBlockNotificationSinks<
-			fc_mapping_sync::EthereumBlockNotification<Block>,
-		>,
-	>,
+pub fn create_full<C, P, SC, B, AuthorityId>(
+	deps: FullDeps<C, P, SC, B, AuthorityId>,
+	// subscription_task_executor: SubscriptionTaskExecutor,
+	// pubsub_notification_sinks: Arc<
+	// 	fc_mapping_sync::EthereumBlockNotificationSinks<
+	// 		fc_mapping_sync::EthereumBlockNotification<Block>,
+	// 	>,
+	// >,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
 	// Block: BlockT,
@@ -183,9 +184,9 @@ where
 	B::Blockchain: BlockchainBackend<Block>,
 	AuthorityId: AuthorityIdBound,
 	<AuthorityId as RuntimeAppPublic>::Signature: Send + Sync,
-	A: ChainApi<Block = Block> + 'static,
-	CIDP: CreateInherentDataProviders<Block, ()> + Send + 'static,
-	CT: fp_rpc::ConvertTransaction<<Block as BlockT>::Extrinsic> + Send + Sync + 'static,
+	// A: ChainApi<Block = Block> + 'static,
+	// CIDP: CreateInherentDataProviders<Block, ()> + Send + 'static,
+	// CT: fp_rpc::ConvertTransaction<<Block as BlockT>::Extrinsic> + Send + Sync + 'static,
 
 {
 	use mmr_rpc::{Mmr, MmrApiServer};
@@ -214,7 +215,7 @@ where
 		statement_store,
 		backend,
 		mixnet_api,
-		eth,
+		// eth,
 	} = deps;
 	let mut io = RpcModule::new(());
 
@@ -288,13 +289,13 @@ where
 		.into_rpc(),
 	)?;
 
-	// Ethereum compatibility RPCs
-	let io = create_eth::< _, _, _, _, _, _, DefaultEthConfig<C, B>>(
-		io,
-		eth,
-		subscription_task_executor,
-		pubsub_notification_sinks,
-	)?;
+	// // Ethereum compatibility RPCs
+	// let io = create_eth::< _, _, _, _, _, _, DefaultEthConfig<C, B>>(
+	// 	io,
+	// 	eth,
+	// 	subscription_task_executor,
+	// 	pubsub_notification_sinks,
+	// )?;
 
 	Ok(io)
 }
