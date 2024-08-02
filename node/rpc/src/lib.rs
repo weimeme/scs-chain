@@ -32,7 +32,7 @@
 #![warn(unused_crate_dependencies)]
 
 mod eth;
-use eth::*;
+pub use eth::*;
 use sp_inherents::CreateInherentDataProviders;
 use std::sync::Arc;
 // use sc_consensus_grandpa_rpc::finality::RpcFinalityProofProvider;

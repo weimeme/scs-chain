@@ -17,6 +17,7 @@
 // along with this program. If not, see <https://www.gnu.org/licenses/>.
 
 use polkadot_sdk::*;
+use super::eth::EthConfiguration;
 
 /// An overarching CLI command definition.
 #[derive(Debug, clap::Parser)]
@@ -46,6 +47,9 @@ pub struct Cli {
 	#[allow(missing_docs)]
 	#[clap(flatten)]
 	pub storage_monitor: sc_storage_monitor::StorageMonitorParams,
+
+	#[command(flatten)]
+	pub eth: EthConfiguration,
 }
 
 /// Possible subcommands of the main binary.

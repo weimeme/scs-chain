@@ -61,7 +61,7 @@ node-inspect = { package = "staging-node-inspect", path = "../inspect", optional
 fc-api = { workspace = true }
 fc-cli = { workspace = true }
 fc-consensus = { workspace = true }
-fc-db = { workspace = true }
+fc-db = { workspace = true, features = ["sql"]}
 fc-mapping-sync = { workspace = true }
 fc-rpc = { workspace = true }
 fc-rpc-core = { workspace = true }

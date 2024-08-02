@@ -180,7 +180,7 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, import_queue, .. } =
-					new_partial(&config, None)?;
+					new_partial(&config, &cli.eth, None)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		},
@@ -214,7 +214,7 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, backend, .. } =
-					new_partial(&config, None)?;
+					new_partial(&config, &cli.eth, None)?;
 				let aux_revert = Box::new(|client: Arc<FullClient>, backend, blocks| {
 					sc_consensus_babe::revert(client.clone(), backend, blocks)?;
 					sc_consensus_grandpa::revert(client, blocks)?;
