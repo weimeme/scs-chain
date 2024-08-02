@@ -18,9 +18,12 @@
 
 //! Substrate chain configurations.
 
+use hex_literal::hex;
 use polkadot_sdk::*;
 
 use kitchensink_runtime::{
+
+	AccountId,
 	constants::currency::*, wasm_binary_unwrap, Block, MaxNominations, SessionKeys, StakerStatus,
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;
@@ -41,7 +44,7 @@ use sp_runtime::{
 };
 
 pub use kitchensink_runtime::RuntimeGenesisConfig;
-pub use node_primitives::{AccountId, Balance, Signature};
+pub use node_primitives::{Balance, Signature};
 
 type AccountPublic = <Signature as Verify>::Signer;
 
@@ -279,6 +282,23 @@ pub fn authority_keys_from_seed(
 	)
 }
 
+/// Helper function to generate stash, controller and session key from seed.
+pub fn authority_keys_from_alice(
+) -> (AccountId, AccountId, GrandpaId, BabeId, ImOnlineId, AuthorityDiscoveryId, MixnetId, BeefyId)
+{
+	let seed = "Alice";
+	(
+		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
+		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
+		get_from_seed::<GrandpaId>(seed),
+		get_from_seed::<BabeId>(seed),
+		get_from_seed::<ImOnlineId>(seed),
+		get_from_seed::<AuthorityDiscoveryId>(seed),
+		get_from_seed::<MixnetId>(seed),
+		get_from_seed::<BeefyId>(seed),
+	)
+}
+
 fn configure_accounts(
 	initial_authorities: Vec<(
 		AccountId,
@@ -373,10 +393,55 @@ pub fn testnet_genesis(
 	)>,
 	initial_nominators: Vec<AccountId>,
 	root_key: AccountId,
+	// 收钱账号
 	endowed_accounts: Option<Vec<AccountId>>,
 ) -> serde_json::Value {
 	let (initial_authorities, endowed_accounts, num_endowed_accounts, stakers) =
 		configure_accounts(initial_authorities, initial_nominators, endowed_accounts, STASH);
+
+	// let evm_accounts = {
+	// 	let mut map = BTreeMap::new();
+	// 	map.insert(
+	// 		// H160 address of Alice dev account
+	// 		// Derived from SS58 (42 prefix) address
+	// 		// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+	// 		// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
+	// 		// Using the full hex key, truncating to the first 20 bytes (the first 40 hex chars)
+	// 		H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558")
+	// 			.expect("internal H160 is valid; qed"),
+	// 		fp_evm::GenesisAccount {
+	// 			balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
+	// 				.expect("internal U256 is valid; qed"),
+	// 			code: Default::default(),
+	// 			nonce: Default::default(),
+	// 			storage: Default::default(),
+	// 		},
+	// 	);
+	// 	map.insert(
+	// 		// H160 address of CI test runner account
+	// 		H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b")
+	// 			.expect("internal H160 is valid; qed"),
+	// 		fp_evm::GenesisAccount {
+	// 			balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
+	// 				.expect("internal U256 is valid; qed"),
+	// 			code: Default::default(),
+	// 			nonce: Default::default(),
+	// 			storage: Default::default(),
+	// 		},
+	// 	);
+	// 	map.insert(
+	// 		// H160 address for benchmark usage
+	// 		H160::from_str("1000000000000000000000000000000000000001")
+	// 			.expect("internal H160 is valid; qed"),
+	// 		fp_evm::GenesisAccount {
+	// 			nonce: U256::from(1),
+	// 			balance: U256::from(1_000_000_000_000_000_000_000_000u128),
+	// 			storage: Default::default(),
+	// 			code: vec![0x00],
+	// 		},
+	// 	);
+	// 	map
+	// };
 
 	serde_json::json!({
 		"balances": {
@@ -437,15 +502,17 @@ pub fn testnet_genesis(
 			"minCreateBond": 10 * DOLLARS,
 			"minJoinBond": 1 * DOLLARS,
 		},
+		"evmChainId": { "chainId": 42 },
+		// "evm": { "accounts": evm_accounts },
 	})
 }
 
 fn development_config_genesis_json() -> serde_json::Value {
 	testnet_genesis(
-		vec![authority_keys_from_seed("Alice")],
+		vec![authority_keys_from_alice()],// vec![AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558"))],
 		vec![],
-		get_account_id_from_seed::<ecdsa::Public>("Alice"),
-		None,
+		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
+		Some(vec![AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558"))]),
 	)
 }
 

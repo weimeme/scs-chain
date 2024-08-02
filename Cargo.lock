@@ -16594,6 +16594,7 @@ dependencies = [
  "fp-evm",
  "fp-rpc",
  "futures",
+ "hex-literal",
  "jsonrpsee",
  "kitchensink-runtime 3.0.0-dev",
  "log",
