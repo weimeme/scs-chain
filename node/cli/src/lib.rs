@@ -34,12 +34,16 @@
 mod benchmarking;
 pub mod chain_spec;
 #[cfg(feature = "cli")]
-mod cli;
+pub mod cli;
 #[cfg(feature = "cli")]
 mod command;
+#[cfg(feature = "cli")]
 pub mod service;
-
+#[cfg(feature = "cli")]
 pub mod eth;
+#[cfg(feature = "cli")]
+pub use eth::EthConfiguration;
+#[cfg(feature = "cli")]
 pub mod client;
 #[cfg(feature = "cli")]
 pub use cli::*;

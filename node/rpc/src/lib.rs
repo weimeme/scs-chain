@@ -127,7 +127,7 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, A: ChainApi, CT,
 	/// The backend used by the node.
 	pub backend: Arc<B>,
 	/// Mixnet API.
-	pub mixnet_api: Option<sc_mixnet::Api>,
+	// pub mixnet_api: Option<sc_mixnet::Api>,
 	pub eth: EthDeps<C, P, A, CT, CIDP>,
 }
 
@@ -195,7 +195,7 @@ where
 	use sc_consensus_grandpa_rpc::{Grandpa, GrandpaApiServer};
 	use sc_rpc::{
 		dev::{Dev, DevApiServer},
-		mixnet::MixnetApiServer,
+		// mixnet::MixnetApiServer,
 		statement::StatementApiServer,
 	};
 	use sc_rpc_spec_v2::chain_spec::{ChainSpec, ChainSpecApiServer};
@@ -213,7 +213,7 @@ where
 		beefy,
 		statement_store,
 		backend,
-		mixnet_api,
+		// mixnet_api,
 		eth,
 	} = deps;
 	let mut io = RpcModule::new(());
@@ -274,10 +274,10 @@ where
 		sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
 	io.merge(statement_store)?;
 
-	if let Some(mixnet_api) = mixnet_api {
-		let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
-		io.merge(mixnet)?;
-	}
+	// if let Some(mixnet_api) = mixnet_api {
+	// 	let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();
+	// 	io.merge(mixnet)?;
+	// }
 
 	io.merge(
 		Beefy::<Block, AuthorityId>::new(

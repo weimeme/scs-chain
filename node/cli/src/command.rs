@@ -24,8 +24,9 @@ use crate::{
 	service::{new_partial, FullClient},
 	Cli, Subcommand,
 };
+use sc_network::{NetworkBackend, Litep2pNetworkBackend};
 use frame_benchmarking_cli::*;
-use kitchensink_runtime::{ExistentialDeposit, RuntimeApi, Block};
+use kitchensink_runtime::{ExistentialDeposit, RuntimeApi, opaque::Block};
 // use node_primitives::Block;
 use sc_cli::{Result, SubstrateCli};
 use sc_service::PartialComponents;
@@ -85,7 +86,7 @@ pub fn run() -> Result<()> {
 		None => {
 			let runner = cli.create_runner(&cli.run)?;
 			runner.run_node_until_exit(|config| async move {
-				service::new_full(config, cli).map_err(sc_cli::Error::Service)
+				service::new_full(config, cli.eth.clone(), cli).map_err(sc_cli::Error::Service)
 			})
 		},
 		Some(Subcommand::Inspect(cmd)) => {
@@ -180,21 +181,21 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, import_queue, .. } =
-					new_partial(&config, &cli.eth, None)?;
+					new_partial::<Litep2pNetworkBackend>(&config, &cli.eth, None)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		},
 		Some(Subcommand::ExportBlocks(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
-				let PartialComponents { client, task_manager, .. } = new_partial(&config, None)?;
+				let PartialComponents { client, task_manager, .. } = new_partial::<Litep2pNetworkBackend>(&config, &cli.eth, None)?;
 				Ok((cmd.run(client, config.database), task_manager))
 			})
 		},
 		Some(Subcommand::ExportState(cmd)) => {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
-				let PartialComponents { client, task_manager, .. } = new_partial(&config, None)?;
+				let PartialComponents { client, task_manager, .. } = new_partial::<Litep2pNetworkBackend>(&config, &cli.eth, None)?;
 				Ok((cmd.run(client, config.chain_spec), task_manager))
 			})
 		},
@@ -202,7 +203,7 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, import_queue, .. } =
-					new_partial(&config, None)?;
+					new_partial::<Litep2pNetworkBackend>(&config, &cli.eth, None)?;
 				Ok((cmd.run(client, import_queue), task_manager))
 			})
 		},
@@ -214,7 +215,7 @@ pub fn run() -> Result<()> {
 			let runner = cli.create_runner(cmd)?;
 			runner.async_run(|config| {
 				let PartialComponents { client, task_manager, backend, .. } =
-					new_partial(&config, &cli.eth, None)?;
+					new_partial::<Litep2pNetworkBackend>(&config, &cli.eth, None)?;
 				let aux_revert = Box::new(|client: Arc<FullClient>, backend, blocks| {
 					sc_consensus_babe::revert(client.clone(), backend, blocks)?;
 					sc_consensus_grandpa::revert(client, blocks)?;
