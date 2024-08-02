@@ -24,7 +24,7 @@ use polkadot_sdk::{
 	sc_consensus_beefy as beefy, sc_consensus_grandpa as grandpa,
 	sp_consensus_beefy as beefy_primitives, *,
 };
-
+use crate::eth::EthConfiguration;
 use crate::Cli;
 use codec::Encode;
 use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
@@ -37,6 +37,7 @@ use sc_consensus_babe::{self, SlotProportion};
 use sc_network::{
 	event::Event, service::traits::NetworkService, NetworkBackend, NetworkEventStream,
 };
+use kitchensink_runtime::TransactionConverter;
 use sc_network_sync::{strategy::warp::WarpSyncParams, SyncingService};
 use sc_service::{config::Configuration, error::Error as ServiceError, RpcHandlers, TaskManager};
 use sc_statement_store::Store as StatementStore;
@@ -167,6 +168,7 @@ pub fn fetch_nonce(client: &FullClient, account: sp_core::ecdsa::Pair) -> u32 {
 /// Creates a new partial node.
 pub fn new_partial(
 	config: &Configuration,
+	// eth_config: &EthConfiguration,
 	mixnet_config: Option<&sc_mixnet::Config>,
 ) -> Result<
 	sc_service::PartialComponents<
@@ -241,6 +243,11 @@ pub fn new_partial(
 		select_chain.clone(),
 		telemetry.as_ref().map(|x| x.handle()),
 	)?;
+
+	// fixme 这里可能需要一个
+	// let frontier_block_import =
+	// 	FrontierBlockImport::new(grandpa_block_import.clone(), client.clone());
+
 	let justification_import = grandpa_block_import.clone();
 
 	let (beefy_block_import, beefy_voter_links, beefy_rpc_links) =
@@ -319,6 +326,32 @@ pub fn new_partial(
 		let rpc_statement_store = statement_store.clone();
 		let rpc_extensions_builder =
 			move |deny_unsafe, subscription_executor: node_rpc::SubscriptionTaskExecutor| {
+				// let enable_dev_signer = eth_config.enable_dev_signer;
+
+				// let eth_deps = node_rpc::EthDeps {
+				// 	client: client.clone(),
+				// 	pool: pool.clone(),
+				// 	graph: pool.pool().clone(),
+				// 	converter: Some(TransactionConverter::<Block>::default()),
+				// 	is_authority: config.role.is_authority().into(),
+				// 	enable_dev_signer,
+				// 	network: network.clone(),
+				// 	sync: sync_service.clone(),
+				// 	frontier_backend: match &*frontier_backend {
+				// 		fc_db::Backend::KeyValue(b) => b.clone(),
+				// 		fc_db::Backend::Sql(b) => b.clone(),
+				// 	},
+				// 	storage_override: storage_override.clone(),
+				// 	block_data_cache: block_data_cache.clone(),
+				// 	filter_pool: filter_pool.clone(),
+				// 	max_past_logs,
+				// 	fee_history_cache: fee_history_cache.clone(),
+				// 	fee_history_cache_limit,
+				// 	execute_gas_limit_multiplier,
+				// 	forced_parent_hashes: None,
+				// 	pending_create_inherent_data_providers,
+				// };
+
 				let deps = node_rpc::FullDeps {
 					client: client.clone(),
 					pool: pool.clone(),
@@ -348,6 +381,8 @@ pub fn new_partial(
 					statement_store: rpc_statement_store.clone(),
 					backend: rpc_backend.clone(),
 					mixnet_api: mixnet_api.as_ref().cloned(),
+					// _a: std::marker::PhantomData,
+					// eth: eth_deps,
 				};
 
 				node_rpc::create_full(deps).map_err(Into::into)
