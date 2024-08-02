@@ -10,7 +10,7 @@ resolver = "2"
 
 members = [
 #    "client/babe-consensus_data_provider",
-#    "node/cli",
+    "node/cli",
     "node/inspect",
     "node/primitives",
     "node/rpc",
@@ -65,7 +65,7 @@ tracing-subscriber = { version = "0.3.18" }
 # Frontier Client
 fc-api = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0" }
 fc-cli = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
-fc-consensus = { path = "client/consensus" }
+fc-consensus = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
 fc-db = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
 fc-mapping-sync = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
 fc-rpc = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }

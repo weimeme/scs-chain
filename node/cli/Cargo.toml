@@ -69,7 +69,7 @@ fp-account = { workspace = true }
 fp-dynamic-fee = { workspace = true, features = ["default"] }
 fp-evm = { workspace = true, features = ["default"] }
 fp-rpc = { workspace = true, features = ["default"] }
-frontier-template-runtime = { workspace = true, features = ["std"] }
+#frontier-template-runtime = { workspace = true, features = ["std"] }
 
 [dev-dependencies]
 futures = "0.3.30"

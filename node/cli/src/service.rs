@@ -30,8 +30,8 @@ use codec::Encode;
 use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
 use frame_system_rpc_runtime_api::AccountNonceApi;
 use futures::prelude::*;
-use kitchensink_runtime::RuntimeApi;
-use node_primitives::Block;
+use kitchensink_runtime::{RuntimeApi, opaque::Block};
+// use node_primitives::Block;
 use sc_client_api::{Backend, BlockBackend};
 use sc_consensus_babe::{self, SlotProportion};
 use sc_network::{
@@ -88,7 +88,7 @@ const GRANDPA_JUSTIFICATION_PERIOD: u32 = 512;
 /// Fetch the nonce of the given `account` from the chain state.
 ///
 /// Note: Should only be used for tests.
-pub fn fetch_nonce(client: &FullClient, account: sp_core::sr25519::Pair) -> u32 {
+pub fn fetch_nonce(client: &FullClient, account: sp_core::ecdsa::Pair) -> u32 {
 	let best_hash = client.chain_info().best_hash;
 	client
 		.runtime_api()
@@ -96,73 +96,73 @@ pub fn fetch_nonce(client: &FullClient, account: sp_core::sr25519::Pair) -> u32 
 		.expect("Fetching account nonce works; qed")
 }
 
-/// Create a transaction using the given `call`.
-///
-/// The transaction will be signed by `sender`. If `nonce` is `None` it will be fetched from the
-/// state of the best block.
-///
-/// Note: Should only be used for tests.
-pub fn create_extrinsic(
-	client: &FullClient,
-	sender: sp_core::sr25519::Pair,
-	function: impl Into<kitchensink_runtime::RuntimeCall>,
-	nonce: Option<u32>,
-) -> kitchensink_runtime::UncheckedExtrinsic {
-	let function = function.into();
-	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
-	let best_hash = client.chain_info().best_hash;
-	let best_block = client.chain_info().best_number;
-	let nonce = nonce.unwrap_or_else(|| fetch_nonce(client, sender.clone()));
-
-	let period = kitchensink_runtime::BlockHashCount::get()
-		.checked_next_power_of_two()
-		.map(|c| c / 2)
-		.unwrap_or(2) as u64;
-	let tip = 0;
-	let extra: kitchensink_runtime::SignedExtra =
-		(
-			frame_system::CheckNonZeroSender::<kitchensink_runtime::Runtime>::new(),
-			frame_system::CheckSpecVersion::<kitchensink_runtime::Runtime>::new(),
-			frame_system::CheckTxVersion::<kitchensink_runtime::Runtime>::new(),
-			frame_system::CheckGenesis::<kitchensink_runtime::Runtime>::new(),
-			frame_system::CheckEra::<kitchensink_runtime::Runtime>::from(generic::Era::mortal(
-				period,
-				best_block.saturated_into(),
-			)),
-			frame_system::CheckNonce::<kitchensink_runtime::Runtime>::from(nonce),
-			frame_system::CheckWeight::<kitchensink_runtime::Runtime>::new(),
-			pallet_skip_feeless_payment::SkipCheckIfFeeless::from(
-				pallet_asset_conversion_tx_payment::ChargeAssetTxPayment::<
-					kitchensink_runtime::Runtime,
-				>::from(tip, None),
-			),
-			frame_metadata_hash_extension::CheckMetadataHash::new(false),
-		);
-
-	let raw_payload = kitchensink_runtime::SignedPayload::from_raw(
-		function.clone(),
-		extra.clone(),
-		(
-			(),
-			kitchensink_runtime::VERSION.spec_version,
-			kitchensink_runtime::VERSION.transaction_version,
-			genesis_hash,
-			best_hash,
-			(),
-			(),
-			(),
-			None,
-		),
-	);
-	let signature = raw_payload.using_encoded(|e| sender.sign(e));
-
-	kitchensink_runtime::UncheckedExtrinsic::new_signed(
-		function,
-		sp_runtime::AccountId32::from(sender.public()).into(),
-		kitchensink_runtime::Signature::Sr25519(signature),
-		extra,
-	)
-}
+// /// Create a transaction using the given `call`.
+// ///
+// /// The transaction will be signed by `sender`. If `nonce` is `None` it will be fetched from the
+// /// state of the best block.
+// ///
+// /// Note: Should only be used for tests.
+// pub fn create_extrinsic(
+// 	client: &FullClient,
+// 	sender: sp_core::ecdsa::Pair,
+// 	function: impl Into<kitchensink_runtime::RuntimeCall>,
+// 	nonce: Option<u32>,
+// ) -> kitchensink_runtime::opaque::UncheckedExtrinsic {
+// 	let function = function.into();
+// 	let genesis_hash = client.block_hash(0).ok().flatten().expect("Genesis block exists; qed");
+// 	let best_hash = client.chain_info().best_hash;
+// 	let best_block = client.chain_info().best_number;
+// 	let nonce = nonce.unwrap_or_else(|| fetch_nonce(client, sender.clone()));
+//
+// 	let period = kitchensink_runtime::BlockHashCount::get()
+// 		.checked_next_power_of_two()
+// 		.map(|c| c / 2)
+// 		.unwrap_or(2) as u64;
+// 	let tip = 0;
+// 	let extra: kitchensink_runtime::SignedExtra =
+// 		(
+// 			frame_system::CheckNonZeroSender::<kitchensink_runtime::Runtime>::new(),
+// 			frame_system::CheckSpecVersion::<kitchensink_runtime::Runtime>::new(),
+// 			frame_system::CheckTxVersion::<kitchensink_runtime::Runtime>::new(),
+// 			frame_system::CheckGenesis::<kitchensink_runtime::Runtime>::new(),
+// 			frame_system::CheckEra::<kitchensink_runtime::Runtime>::from(generic::Era::mortal(
+// 				period,
+// 				best_block.saturated_into(),
+// 			)),
+// 			frame_system::CheckNonce::<kitchensink_runtime::Runtime>::from(nonce),
+// 			frame_system::CheckWeight::<kitchensink_runtime::Runtime>::new(),
+// 			pallet_skip_feeless_payment::SkipCheckIfFeeless::from(
+// 				pallet_asset_conversion_tx_payment::ChargeAssetTxPayment::<
+// 					kitchensink_runtime::Runtime,
+// 				>::from(tip, None),
+// 			),
+// 			frame_metadata_hash_extension::CheckMetadataHash::new(false),
+// 		);
+//
+// 	let raw_payload = kitchensink_runtime::SignedPayload::from_raw(
+// 		function.clone(),
+// 		extra.clone(),
+// 		(
+// 			(),
+// 			kitchensink_runtime::VERSION.spec_version,
+// 			kitchensink_runtime::VERSION.transaction_version,
+// 			genesis_hash,
+// 			best_hash,
+// 			(),
+// 			(),
+// 			(),
+// 			None,
+// 		),
+// 	);
+// 	let signature = raw_payload.using_encoded(|e| sender.sign(e));
+//
+// 	kitchensink_runtime::opaque::UncheckedExtrinsic::new_signed(
+// 		function,
+// 		sp_runtime::AccountId32::from(sender.public()).into(),
+// 		kitchensink_runtime::Signature::Sr25519(signature),
+// 		extra,
+// 	)
+// }
 
 /// Creates a new partial node.
 pub fn new_partial(
@@ -851,7 +851,7 @@ mod tests {
 	use codec::Encode;
 	use kitchensink_runtime::{
 		constants::{currency::CENTS, time::SLOT_DURATION},
-		Address, BalancesCall, RuntimeCall, UncheckedExtrinsic,
+		Address, BalancesCall, RuntimeCall, opaque::UncheckedExtrinsic,
 	};
 	use node_primitives::{Block, DigestItem, Signature};
 	use polkadot_sdk::*;

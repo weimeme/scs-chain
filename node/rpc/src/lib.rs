@@ -156,7 +156,7 @@ where
 	C::Api: substrate_frame_rpc_system::AccountNonceApi<Block, AccountId, Nonce>,
 	C::Api: mmr_rpc::MmrRuntimeApi<Block, <Block as sp_runtime::traits::Block>::Hash, BlockNumber>,
 	C::Api: pallet_transaction_payment_rpc::TransactionPaymentRuntimeApi<Block, Balance>,
-	C::Api: sp_consensus_aura::AuraApi<Block, AuraId>,
+	// C::Api: sp_consensus_aura::AuraApi<Block, AuraId>,
 	C::Api: sc_consensus_babe::BabeApi<Block>,
 	C::Api: BlockBuilder<Block>,
 	C::Api: sp_api::ApiExt<Block>,
