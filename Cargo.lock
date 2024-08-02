@@ -817,23 +817,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
 
 [[package]]
-name = "babe-consensus_data_provider"
-version = "0.1.0"
-dependencies = [
- "fc-rpc",
- "sc-client-api",
- "sc-service",
- "scale-info",
- "sp-api",
- "sp-application-crypto",
- "sp-consensus-babe",
- "sp-core",
- "sp-inherents",
- "sp-keystore",
- "sp-runtime",
-]
-
-[[package]]
 name = "backtrace"
 version = "0.3.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3290,144 +3273,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.72",
-]
-
-[[package]]
-name = "fc-api"
-version = "1.0.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "async-trait",
- "fp-storage",
- "parity-scale-codec",
- "sp-core",
- "sp-runtime",
-]
-
-[[package]]
-name = "fc-db"
-version = "2.0.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "async-trait",
- "fc-api",
- "fp-storage",
- "log",
- "parity-db",
- "parity-scale-codec",
- "parking_lot 0.12.3",
- "sc-client-db",
- "sp-blockchain",
- "sp-core",
- "sp-database",
- "sp-runtime",
-]
-
-[[package]]
-name = "fc-mapping-sync"
-version = "2.0.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "fc-db",
- "fc-storage",
- "fp-consensus",
- "fp-rpc",
- "futures",
- "futures-timer",
- "log",
- "parking_lot 0.12.3",
- "sc-client-api",
- "sc-utils",
- "sp-api",
- "sp-blockchain",
- "sp-consensus",
- "sp-runtime",
-]
-
-[[package]]
-name = "fc-rpc"
-version = "2.0.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "ethereum",
- "ethereum-types",
- "evm",
- "fc-api",
- "fc-mapping-sync",
- "fc-rpc-core",
- "fc-storage",
- "fp-evm",
- "fp-rpc",
- "fp-storage",
- "futures",
- "hex",
- "jsonrpsee",
- "libsecp256k1",
- "log",
- "pallet-evm",
- "parity-scale-codec",
- "prometheus",
- "rand 0.8.5",
- "rlp",
- "sc-client-api",
- "sc-consensus-aura",
- "sc-network",
- "sc-network-sync",
- "sc-rpc",
- "sc-service",
- "sc-transaction-pool",
- "sc-transaction-pool-api",
- "sc-utils",
- "schnellru",
- "serde",
- "sp-api",
- "sp-block-builder",
- "sp-blockchain",
- "sp-consensus",
- "sp-consensus-aura",
- "sp-core",
- "sp-externalities 0.25.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
- "sp-inherents",
- "sp-io",
- "sp-runtime",
- "sp-state-machine",
- "sp-storage 19.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
- "sp-timestamp",
- "substrate-prometheus-endpoint",
- "thiserror",
- "tokio",
-]
-
-[[package]]
-name = "fc-rpc-core"
-version = "1.1.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "ethereum",
- "ethereum-types",
- "jsonrpsee",
- "rlp",
- "rustc-hex",
- "serde",
- "serde_json",
- "sp-crypto-hashing",
-]
-
-[[package]]
-name = "fc-storage"
-version = "1.0.0-dev"
-source = "git+https://github.com/ChainSupport/frontier.git?branch=release-polkadot-v1.13.0#de644003120d3fc53f68e49469113e4dbd6efd3d"
-dependencies = [
- "ethereum",
- "ethereum-types",
- "fp-rpc",
- "fp-storage",
- "parity-scale-codec",
- "sc-client-api",
- "sp-api",
- "sp-io",
- "sp-runtime",
- "sp-storage 19.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
 ]
 
 [[package]]
@@ -9823,7 +9668,7 @@ dependencies = [
  "sp-version-proc-macro",
  "sp-wasm-interface 20.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
  "sp-weights",
- "staging-node-inspect",
+ "staging-node-inspect 0.12.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
  "staging-parachain-info",
  "staging-xcm",
  "staging-xcm-builder",
@@ -11578,35 +11423,6 @@ dependencies = [
  "sp-core",
  "sp-runtime",
  "sp-state-machine",
- "substrate-prometheus-endpoint",
- "thiserror",
-]
-
-[[package]]
-name = "sc-consensus-aura"
-version = "0.34.0"
-source = "git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0#d5160c1d567cc73c7df6c816d41e21aa3adb188d"
-dependencies = [
- "async-trait",
- "futures",
- "log",
- "parity-scale-codec",
- "sc-block-builder",
- "sc-client-api",
- "sc-consensus",
- "sc-consensus-slots",
- "sc-telemetry",
- "sp-api",
- "sp-application-crypto",
- "sp-block-builder",
- "sp-blockchain",
- "sp-consensus",
- "sp-consensus-aura",
- "sp-consensus-slots",
- "sp-core",
- "sp-inherents",
- "sp-keystore",
- "sp-runtime",
  "substrate-prometheus-endpoint",
  "thiserror",
 ]
@@ -14371,6 +14187,23 @@ name = "stable_deref_trait"
 version = "1.2.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a8f112729512f8e442d81f95a8a7ddf2b7c6b8a1a6f509a95864142b30cab2d3"
+
+[[package]]
+name = "staging-node-inspect"
+version = "0.12.0"
+dependencies = [
+ "clap",
+ "parity-scale-codec",
+ "sc-cli",
+ "sc-client-api",
+ "sc-service",
+ "sp-blockchain",
+ "sp-core",
+ "sp-io",
+ "sp-runtime",
+ "sp-statement-store",
+ "thiserror",
+]
 
 [[package]]
 name = "staging-node-inspect"
