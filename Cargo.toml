@@ -14,7 +14,7 @@ members = [
     "node/inspect",
     "node/primitives",
     "node/rpc",
-    "node/runtime"
+    "runtime"
 ]
 
 #default-members = [
