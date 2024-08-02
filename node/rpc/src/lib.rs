@@ -32,7 +32,8 @@
 #![warn(unused_crate_dependencies)]
 
 mod eth;
-
+use eth::*;
+use sp_inherents::CreateInherentDataProviders;
 use std::sync::Arc;
 // use sc_consensus_grandpa_rpc::finality::RpcFinalityProofProvider;
 
@@ -67,7 +68,9 @@ use sp_keystore::KeystorePtr;
 use sp_runtime::traits::Block as BlockT;
 use sp_blockchain::Backend as BlockchainBackend;
 use sc_client_api::{client::BlockchainEvents, UsageProvider, backend::StorageProvider};
+// use sc_rpc_api::chain::ChainApi;
 // use sc_consensus_grandpa_rpc::GrandpaApi;
+// use sc_transaction_pool::{ChainApi, Pool};
 
 /// Extra dependencies for BABE.
 pub struct BabeDeps {
@@ -102,7 +105,7 @@ pub struct BeefyDeps<AuthorityId: AuthorityIdBound> {
 }
 
 /// Full client dependencies.
-pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
+pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound, A: ChainApi, CT, CIDP> {
 	/// The client instance to use.
 	pub client: Arc<C>,
 	/// Transaction pool instance.
@@ -125,23 +128,31 @@ pub struct FullDeps<C, P, SC, B, AuthorityId: AuthorityIdBound> {
 	pub backend: Arc<B>,
 	/// Mixnet API.
 	pub mixnet_api: Option<sc_mixnet::Api>,
+	pub eth: EthDeps<C, P, A, CT, CIDP>,
+}
+
+pub struct DefaultEthConfig<C, BE>(std::marker::PhantomData<(C, BE)>);
+
+impl<B, C, BE> fc_rpc::EthConfig<B, C> for DefaultEthConfig<C, BE>
+	where
+		B: BlockT,
+		C: StorageProvider<B, BE> + Sync + Send + 'static,
+		BE: sc_client_api::Backend<B> + 'static,
+{
+	type EstimateGasAdapter = ();
+	type RuntimeStorageOverride =
+	fc_rpc::frontier_backend_client::SystemAccountId20StorageOverride<B, C, BE>;
 }
 
 /// Instantiate all Full RPC extensions.
-pub fn create_full<C, P, SC, B, AuthorityId>(
-	FullDeps {
-		client,
-		pool,
-		select_chain,
-		chain_spec,
-		deny_unsafe,
-		babe,
-		grandpa,
-		beefy,
-		statement_store,
-		backend,
-		mixnet_api,
-	}: FullDeps<C, P, SC, B, AuthorityId>,
+pub fn create_full<C, P, SC, B, AuthorityId, A, CT, CIDP>(
+	deps: FullDeps<C, P, SC, B, AuthorityId, A, CT, CIDP>,
+	subscription_task_executor: SubscriptionTaskExecutor,
+	pubsub_notification_sinks: Arc<
+		fc_mapping_sync::EthereumBlockNotificationSinks<
+			fc_mapping_sync::EthereumBlockNotification<Block>,
+		>,
+	>,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
 where
 	// Block: BlockT,
@@ -172,6 +183,10 @@ where
 	B::Blockchain: BlockchainBackend<Block>,
 	AuthorityId: AuthorityIdBound,
 	<AuthorityId as RuntimeAppPublic>::Signature: Send + Sync,
+	A: ChainApi<Block = Block> + 'static,
+	CIDP: CreateInherentDataProviders<Block, ()> + Send + 'static,
+	CT: fp_rpc::ConvertTransaction<<Block as BlockT>::Extrinsic> + Send + Sync + 'static,
+
 {
 	use mmr_rpc::{Mmr, MmrApiServer};
 	use pallet_transaction_payment_rpc::{TransactionPayment, TransactionPaymentApiServer};
@@ -187,7 +202,20 @@ where
 	use sc_sync_state_rpc::{SyncState, SyncStateApiServer};
 	use substrate_frame_rpc_system::{System, SystemApiServer};
 	use substrate_state_trie_migration_rpc::{StateMigration, StateMigrationApiServer};
-
+	let FullDeps {
+		client,
+		pool,
+		select_chain,
+		chain_spec,
+		deny_unsafe,
+		babe,
+		grandpa,
+		beefy,
+		statement_store,
+		backend,
+		mixnet_api,
+		eth,
+	} = deps;
 	let mut io = RpcModule::new(());
 
 	let GrandpaDeps {
@@ -258,6 +286,14 @@ where
 			beefy.subscription_executor,
 		)?
 		.into_rpc(),
+	)?;
+
+	// Ethereum compatibility RPCs
+	let io = create_eth::< _, _, _, _, _, _, DefaultEthConfig<C, B>>(
+		io,
+		eth,
+		subscription_task_executor,
+		pubsub_notification_sinks,
 	)?;
 
 	Ok(io)
