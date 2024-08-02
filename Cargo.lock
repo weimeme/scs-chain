@@ -7397,6 +7397,11 @@ dependencies = [
 name = "node-rpc"
 version = "3.0.0-dev"
 dependencies = [
+ "fc-api",
+ "fc-mapping-sync",
+ "fc-rpc",
+ "fc-rpc-core",
+ "fc-storage",
  "fp-rpc",
  "jsonrpsee",
  "kitchensink-runtime 3.0.0-dev",
@@ -7411,6 +7416,8 @@ dependencies = [
  "sc-consensus-grandpa",
  "sc-consensus-grandpa-rpc",
  "sc-mixnet",
+ "sc-network",
+ "sc-network-sync",
  "sc-rpc",
  "sc-rpc-api",
  "sc-rpc-spec-v2",
@@ -7425,6 +7432,8 @@ dependencies = [
  "sp-consensus-aura",
  "sp-consensus-babe",
  "sp-consensus-beefy",
+ "sp-core",
+ "sp-inherents",
  "sp-keystore",
  "sp-runtime",
  "sp-statement-store",
