@@ -290,8 +290,8 @@ pub fn authority_keys_from_alice(
 {
 	let seed = "Alice";
 	(
-		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
-		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
+		AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
+		AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
 		get_from_seed::<GrandpaId>(seed),
 		get_from_seed::<BabeId>(seed),
 		get_from_seed::<ImOnlineId>(seed),
@@ -513,8 +513,8 @@ fn development_config_genesis_json() -> serde_json::Value {
 	testnet_genesis(
 		vec![authority_keys_from_alice()],// vec![AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558"))],
 		vec![],
-		AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558")),
-		Some(vec![AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558"))]),
+		AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
+		Some(vec![AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))]),
 	)
 }
 
