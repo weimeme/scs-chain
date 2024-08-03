@@ -56,6 +56,98 @@ sp_api::ApiExt<Block>
 {
 }
 
+pub fn spawn_frontier_tasks<B, RA, HF>(
+    task_manager: &TaskManager,
+    client: Arc<FullClient<B, RA, HF>>,
+    backend: Arc<FullBackend<B>>,
+    frontier_backend: Arc<FrontierBackend<B, FullClient<B, RA, HF>>>,
+    filter_pool: Option<FilterPool>,
+    storage_override: Arc<dyn StorageOverride<B>>,
+    fee_history_cache: FeeHistoryCache,
+    fee_history_cache_limit: FeeHistoryCacheLimit,
+    sync: Arc<SyncingService<B>>,
+    pubsub_notification_sinks: Arc<
+        fc_mapping_sync::EthereumBlockNotificationSinks<
+            fc_mapping_sync::EthereumBlockNotification<B>,
+        >,
+    >,
+) where
+    B: BlockT<Hash = H256>,
+    RA: ConstructRuntimeApi<B, FullClient<B, RA, HF>>,
+    RA: Send + Sync + 'static,
+    RA::RuntimeApi: EthCompatRuntimeApiCollection<B>,
+    HF: HostFunctions + 'static,
+{
+    // Spawn main mapping sync worker background task.
+    match &*frontier_backend {
+        // fixme 以太坊同步
+        fc_db::Backend::KeyValue(b) => {
+            task_manager.spawn_essential_handle().spawn(
+                "frontier-mapping-sync-worker",
+                Some("frontier"),
+                fc_mapping_sync::kv::MappingSyncWorker::new(
+                    client.import_notification_stream(),
+                    Duration::new(6, 0),
+                    client.clone(),
+                    backend,
+                    storage_override.clone(),
+                    b.clone(),
+                    3,
+                    0u32.into(),
+                    fc_mapping_sync::SyncStrategy::Normal,
+                    sync,
+                    pubsub_notification_sinks,
+                )
+                    .for_each(|()| future::ready(())),
+            );
+        }
+
+        fc_db::Backend::Sql(b) => {
+            task_manager.spawn_essential_handle().spawn_blocking(
+                "frontier-mapping-sync-worker",
+                Some("frontier"),
+                fc_mapping_sync::sql::SyncWorker::run(
+                    client.clone(),
+                    backend,
+                    b.clone(),
+                    client.import_notification_stream(),
+                    fc_mapping_sync::sql::SyncWorkerConfig {
+                        read_notification_timeout: Duration::from_secs(30),
+                        check_indexed_blocks_interval: Duration::from_secs(60),
+                    },
+                    fc_mapping_sync::SyncStrategy::Parachain,
+                    sync,
+                    pubsub_notification_sinks,
+                ),
+            );
+        }
+    }
+
+    // Spawn Frontier EthFilterApi maintenance task.
+    if let Some(filter_pool) = filter_pool {
+        // Each filter is allowed to stay in the pool for 100 blocks.
+        const FILTER_RETAIN_THRESHOLD: u64 = 100;
+        task_manager.spawn_essential_handle().spawn(
+            "frontier-filter-pool",
+            Some("frontier"),
+            EthTask::filter_pool_task(client.clone(), filter_pool, FILTER_RETAIN_THRESHOLD),
+        );
+    }
+
+    // Spawn Frontier FeeHistory cache maintenance task.
+    task_manager.spawn_essential_handle().spawn(
+        "frontier-fee-history",
+        Some("frontier"),
+        EthTask::fee_history_task(
+            client,
+            storage_override,
+            fee_history_cache,
+            fee_history_cache_limit,
+        ),
+    );
+}
+
+
 impl<Block, Api> EthCompatRuntimeApiCollection<Block> for Api
     where
         Block: BlockT,
