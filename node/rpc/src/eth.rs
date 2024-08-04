@@ -64,7 +64,6 @@ pub struct EthDeps<C, P, A: ChainApi, CT, CIDP> {
     /// Mandated parent hashes for a given block hash.
     pub forced_parent_hashes: Option<BTreeMap<H256, H256>>,
     /// Something that can create the inherent data providers for pending state
-    /// fixme 这个实现非常非常非常非常重要
     pub pending_create_inherent_data_providers: CIDP,
 }
 
@@ -98,8 +97,6 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
         EthFilter, EthFilterApiServer, EthPubSub, EthPubSubApiServer, EthSigner, Net, NetApiServer,
         Web3, Web3ApiServer,
     };
-    #[cfg(feature = "txpool")]
-    use fc_rpc::{TxPool, TxPoolApiServer};
 
     let EthDeps {
         client,
@@ -119,7 +116,6 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
         fee_history_cache_limit,
         execute_gas_limit_multiplier,
         forced_parent_hashes,
-        // todo 根据新的babe共识来写
         pending_create_inherent_data_providers,
     } = deps;
 
@@ -145,7 +141,6 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             execute_gas_limit_multiplier,
             forced_parent_hashes,
             pending_create_inherent_data_providers,
-            // fixme 这是一个最重的实现！！！
             // Some(Box::new(AuraConsensusDataProvider::new(client.clone()))),
             None,
         )
@@ -153,7 +148,6 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             .into_rpc(),
     )?;
 
-    // fixme 一样的实现
     if let Some(filter_pool) = filter_pool {
         io.merge(
             EthFilter::new(
@@ -169,7 +163,6 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
         )?;
     }
 
-    // fixme 实现一样
     io.merge(
         EthPubSub::new(
             pool,
@@ -206,6 +199,9 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
 
     #[cfg(feature = "txpool")]
     io.merge(TxPool::new(client, graph).into_rpc())?;
+
+    #[cfg(feature = "txpool")]
+    use fc_rpc::{TxPool, TxPoolApiServer};
 
     Ok(io)
 }
