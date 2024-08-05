@@ -195,7 +195,7 @@ where
 	use sc_consensus_grandpa_rpc::{Grandpa, GrandpaApiServer};
 	use sc_rpc::{
 		dev::{Dev, DevApiServer},
-		// mixnet::MixnetApiServer,
+		mixnet::MixnetApiServer,
 		statement::StatementApiServer,
 	};
 	use sc_rpc_spec_v2::chain_spec::{ChainSpec, ChainSpecApiServer};
@@ -229,21 +229,21 @@ where
 	let chain_name = chain_spec.name().to_string();
 	let genesis_hash = client.block_hash(0u32.into()).ok().flatten().expect("Genesis block exists; qed");
 	let properties = chain_spec.properties();
-	// io.merge(ChainSpec::new(chain_name, genesis_hash, properties).into_rpc())?;
+	io.merge(ChainSpec::new(chain_name, genesis_hash, properties).into_rpc())?;
 
 	io.merge(System::new(client.clone(), pool, deny_unsafe).into_rpc())?;
 	// Making synchronous calls in light client freezes the browser currently,
 	// more context: https://github.com/paritytech/substrate/pull/3480
 	// These RPCs should use an asynchronous caller instead.
-	// io.merge(
-	// 	Mmr::new(
-	// 		client.clone(),
-	// 		backend
-	// 			.offchain_storage()
-	// 			.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
-	// 	)
-	// 	.into_rpc(),
-	// )?;
+	io.merge(
+		Mmr::new(
+			client.clone(),
+			backend
+				.offchain_storage()
+				.ok_or_else(|| "Backend doesn't provide an offchain storage")?,
+		)
+		.into_rpc(),
+	)?;
 
 	io.merge(TransactionPayment::new(client.clone()).into_rpc())?;
 	let BabeDeps { keystore, babe_worker_handle } = babe;
@@ -262,16 +262,16 @@ where
 		.into_rpc(),
 	)?;
 
-	// io.merge(
-	// 	SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
-	// 		.into_rpc(),
-	// )?;
-	//
-	// io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
-	// io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
-	// let statement_store =
-	// 	sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
-	// io.merge(statement_store)?;
+	io.merge(
+		SyncState::new(chain_spec, client.clone(), shared_authority_set, babe_worker_handle)?
+			.into_rpc(),
+	)?;
+
+	io.merge(StateMigration::new(client.clone(), backend, deny_unsafe).into_rpc())?;
+	io.merge(Dev::new(client, deny_unsafe).into_rpc())?;
+	let statement_store =
+		sc_rpc::statement::StatementStore::new(statement_store, deny_unsafe).into_rpc();
+	io.merge(statement_store)?;
 
 	// if let Some(mixnet_api) = mixnet_api {
 	// 	let mixnet = sc_rpc::mixnet::Mixnet::new(mixnet_api).into_rpc();

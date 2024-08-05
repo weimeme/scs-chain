@@ -525,6 +525,7 @@ pub fn development_config() -> ChainSpec {
 		.with_id("dev")
 		// .with_id()
 		.with_chain_type(ChainType::Development)
+		// .with_properties(serde_json::from_str("{\"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}")
 		.with_properties(serde_json::from_str("{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}")
 							 .expect("Provided valid json map"),)
 		.with_genesis_config_patch(development_config_genesis_json())
