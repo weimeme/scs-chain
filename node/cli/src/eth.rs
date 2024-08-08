@@ -80,7 +80,6 @@ pub fn spawn_frontier_tasks<B, RA, HF>(
 {
     // Spawn main mapping sync worker background task.
     match &*frontier_backend {
-        // fixme 以太坊同步
         fc_db::Backend::KeyValue(b) => {
             task_manager.spawn_essential_handle().spawn(
                 "frontier-mapping-sync-worker",
