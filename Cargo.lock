@@ -6008,6 +6008,7 @@ dependencies = [
  "fp-self-contained",
  "log",
  "node-primitives 2.0.0",
+ "pallet-balances",
  "pallet-base-fee",
  "pallet-dynamic-fee",
  "pallet-ethereum",
