@@ -77,11 +77,17 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // }
 
 fn session_keys(
+	// ed25519
 	grandpa: GrandpaId,
+	// sr25519
 	babe: BabeId,
+	// sr25519
 	im_online: ImOnlineId,
+	// sr25519
 	authority_discovery: AuthorityDiscoveryId,
+	// sr25519
 	mixnet: MixnetId,
+	// ecdsa
 	beefy: BeefyId,
 ) -> SessionKeys {
 	SessionKeys { grandpa, babe, im_online, authority_discovery, mixnet, beefy }

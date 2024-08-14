@@ -5,6 +5,7 @@
 .DS_Store
 .env*
 .idea
+keystore
 .local
 .lycheecache
 .vscode
