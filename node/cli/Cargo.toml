@@ -6,7 +6,7 @@ description = "Generic Substrate node implementation in Rust."
 build = "build.rs"
 edition.workspace = true
 license = "GPL-3.0-or-later WITH Classpath-exception-2.0"
-default-run = "substrate-node"
+default-run = "scs-node"
 homepage = "https://substrate.io"
 repository.workspace = true
 publish = false
@@ -28,7 +28,7 @@ is-it-maintained-issue-resolution = { repository = "paritytech/polkadot-sdk" }
 is-it-maintained-open-issues = { repository = "paritytech/polkadot-sdk" }
 
 [[bin]]
-name = "substrate-node"
+name = "scs-node"
 path = "bin/main.rs"
 required-features = ["cli"]
 

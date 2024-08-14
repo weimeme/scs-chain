@@ -3,6 +3,8 @@
 # This script lists the files in the current directory
 #ls
 
+mkdir keystore
+
 ./target/release/substrate-node key generate --output-type json --scheme ed25519 | tee keystore/grandpa.json
 
 ./target/release/substrate-node key generate --output-type json --scheme sr25519 | tee keystore/babe.json
