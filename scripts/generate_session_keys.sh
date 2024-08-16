@@ -5,14 +5,14 @@
 
 mkdir keystore
 
-./target/release/substrate-node key generate --output-type json --scheme ed25519 | tee keystore/grandpa.json
+./target/release/scs-node key generate --output-type json --scheme ed25519 | tee keystore/grandpa.json
 
-./target/release/substrate-node key generate --output-type json --scheme sr25519 | tee keystore/babe.json
+./target/release/scs-node key generate --output-type json --scheme sr25519 | tee keystore/babe.json
 
-./target/release/substrate-node key generate --output-type json --scheme sr25519 | tee keystore/im_online.json
+./target/release/scs-node key generate --output-type json --scheme sr25519 | tee keystore/im_online.json
 
-./target/release/substrate-node key generate --output-type json --scheme sr25519 | tee keystore/authority_discovery.json
+./target/release/scs-node key generate --output-type json --scheme sr25519 | tee keystore/authority_discovery.json
 
-./target/release/substrate-node key generate --output-type json --scheme sr25519 | tee keystore/mixnet.json
+./target/release/scs-node key generate --output-type json --scheme sr25519 | tee keystore/mixnet.json
 
-./target/release/substrate-node key generate --output-type json --scheme ecdsa | tee keystore/beefy.json
+./target/release/scs-node key generate --output-type json --scheme ecdsa | tee keystore/beefy.json

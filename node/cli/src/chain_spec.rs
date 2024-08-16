@@ -51,8 +51,8 @@ pub use node_primitives::{Balance, Signature};
 type AccountPublic = <Signature as Verify>::Signer;
 
 const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
-const ENDOWMENT: Balance = 100 * DOLLARS;
-const STASH: Balance = ENDOWMENT;
+const ENDOWMENT: Balance = 100_000000 * DOLLARS;
+const STASH: Balance = ENDOWMENT/100;
 
 /// Node `ChainSpec` extensions.
 ///
@@ -130,10 +130,13 @@ fn configure_accounts_for_staging_testnet() -> (
 		MixnetId,
 		BeefyId,
 	)> = vec![
+		// authority_keys_from_alice(),
 		(
 			// fixme
-			H160::from_str("6Cf000856e98d31D35ed49FfD87ce6027A65D4f2").expect("internal H160 is valid; qed").into(),
-			H160::from_str("14a38ebBC12316D678a2f3BA1941637c9E3090AF").expect("internal H160 is valid; qed").into(),
+			AccountId::from(hex!("6Cf000856e98d31D35ed49FfD87ce6027A65D4f2")),
+			AccountId::from(hex!("14a38ebBC12316D678a2f3BA1941637c9E3090AF")),
+			// H160::from_str("6Cf000856e98d31D35ed49FfD87ce6027A65D4f2").expect("internal H160 is valid; qed").into(),
+			// H160::from_str("14a38ebBC12316D678a2f3BA1941637c9E3090AF").expect("internal H160 is valid; qed").into(),
 			// 5FqDUrCH112RHzKoihRtv71XDNThRhkCfP9iHyHWZi5Sj82U
 			array_bytes::hex2array_unchecked("a6a738828c1fd3d438de6f9a9e4ff0f5cc3dcdeed062b1950d56a0769be3e462")
 				.unchecked_into(),
@@ -154,8 +157,10 @@ fn configure_accounts_for_staging_testnet() -> (
 				.unchecked_into(),
 		),
 		(
-			H160::from_str("3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
-			H160::from_str("FCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
+			AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
+			AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
+			// H160::from_str("3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
+			// H160::from_str("FCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
 			// 5FMAvJiAMDJgvm3WWMF7ahouBeMtf5qsXYSv7hacuSic8TW5
 			array_bytes::hex2array_unchecked("9143ba611eee5bb7bc7d41dfc30429e405ef42be6734d3ca5f86f2ab6299129b")
 				.unchecked_into(),
@@ -176,8 +181,10 @@ fn configure_accounts_for_staging_testnet() -> (
 				.unchecked_into(),
 		),
 		(
-			H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
-			H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
+			AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
+			AccountId::from(hex!("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e")),
+			// H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
+			// H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
 			// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
 			array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8a")
 				.unchecked_into(),
@@ -197,32 +204,10 @@ fn configure_accounts_for_staging_testnet() -> (
 			array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d2")
 				.unchecked_into(),
 		),
-
-		// (
-		// 	H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9951").expect("internal H160 is valid; qed").into(),
-		// 	H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C51").expect("internal H160 is valid; qed").into(),
-		// 	// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
-		// 	array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8b")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467b")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467b")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467b")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467b")
-		// 		.unchecked_into(),
-		// 	// 5GPGYxmZifrfgGbokX1k8uYYjhL5uAi4Tt5efrZXCcyh49zJ
-		// 	array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d1")
-		// 		.unchecked_into(),
-		// ),
 	];
 
-	let root_key: AccountId = H160::from_str("79BD79C274C845E8a29378513c0053b19395E863").expect("internal H160 is valid; qed").into();
+	let root_key: AccountId = AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952"));
+	// let root_key: AccountId = H160::from_str("79BD79C274C845E8a29378513c0053b19395E863").expect("internal H160 is valid; qed").into();
 
 	let endowed_accounts: Vec<AccountId> = vec![root_key.clone()];
 	(initial_authorities, root_key, endowed_accounts)
@@ -467,6 +452,11 @@ pub fn testnet_genesis(
 				})
 				.collect::<Vec<_>>(),
 		},
+		// "grandpa": {
+		// 	"authorities": initial_authorities.iter()
+		// 		.map(|x| {(x.2.clone(), 1000_000)}).collect::<Vec<_>>(),
+		// 	// "_config": (),
+		// },
 		"staking": {
 			"validatorCount": initial_authorities.len() as u32,
 			"minimumValidatorCount": initial_authorities.len() as u32,
