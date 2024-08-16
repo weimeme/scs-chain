@@ -51,8 +51,8 @@ pub use node_primitives::{Balance, Signature};
 type AccountPublic = <Signature as Verify>::Signer;
 
 const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
-const ENDOWMENT: Balance = 10_000_000 * DOLLARS;
-const STASH: Balance = ENDOWMENT / 1000;
+const ENDOWMENT: Balance = 100 * DOLLARS;
+const STASH: Balance = ENDOWMENT;
 
 /// Node `ChainSpec` extensions.
 ///
@@ -131,8 +131,9 @@ fn configure_accounts_for_staging_testnet() -> (
 		BeefyId,
 	)> = vec![
 		(
-			H160::from_str("1000000000000000000000000000000000000001").expect("internal H160 is valid; qed").into(),
-			H160::from_str("1000000000000000000000000000000000000001").expect("internal H160 is valid; qed").into(),
+			// fixme
+			H160::from_str("0x6Cf000856e98d31D35ed49FfD87ce6027A65D4f2").expect("internal H160 is valid; qed").into(),
+			H160::from_str("0x14a38ebBC12316D678a2f3BA1941637c9E3090AF").expect("internal H160 is valid; qed").into(),
 			// 5Fb9ayurnxnaXj56CjmyQLBiadfRCqUbL2VWNbbe1nZU6wiC
 			array_bytes::hex2array_unchecked("9becad03e6dcac03cee07edebca5475314861492cdfc96a2144a67bbe9699332")
 				.unchecked_into(),
@@ -153,8 +154,8 @@ fn configure_accounts_for_staging_testnet() -> (
 				.unchecked_into(),
 		),
 		(
-			H160::from_str("1000000000000000000000000000000000000002").expect("internal H160 is valid; qed").into(),
-			H160::from_str("1000000000000000000000000000000000000002").expect("internal H160 is valid; qed").into(),
+			H160::from_str("0x3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
+			H160::from_str("0xFCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
 			// 5EockCXN6YkiNCDjpqqnbcqd4ad35nU4RmA1ikM4YeRN4WcE
 			array_bytes::hex2array_unchecked("7932cff431e748892fa48e10c63c17d30f80ca42e4de3921e641249cd7fa3c2f")
 				.unchecked_into(),
@@ -175,8 +176,8 @@ fn configure_accounts_for_staging_testnet() -> (
 				.unchecked_into(),
 		),
 		(
-			H160::from_str("1000000000000000000000000000000000000003").expect("internal H160 is valid; qed").into(),
-			H160::from_str("1000000000000000000000000000000000000003").expect("internal H160 is valid; qed").into(),
+			H160::from_str("0xAcf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
+			H160::from_str("0x778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
 			// 5E1jLYfLdUQKrFrtqoKgFrRvxM3oQPMbf6DfcsrugZZ5Bn8d
 			array_bytes::hex2array_unchecked("5633b70b80a6c8bb16270f82cca6d56b27ed7b76c8fd5af2986a25a4788ce440")
 				.unchecked_into(),
@@ -198,9 +199,7 @@ fn configure_accounts_for_staging_testnet() -> (
 		),
 	];
 
-	// generated with secret: subkey inspect "$secret"/fir
-	// fixme
-	let root_key: AccountId = H160::from_str("1000000000000000000000000000000000000001").expect("internal H160 is valid; qed").into();
+	let root_key: AccountId = H160::from_str("0x79BD79C274C845E8a29378513c0053b19395E863").expect("internal H160 is valid; qed").into();
 
 	let endowed_accounts: Vec<AccountId> = vec![root_key.clone()];
 	(initial_authorities, root_key, endowed_accounts)
@@ -324,7 +323,6 @@ fn configure_accounts(
 		]
 	});
 	// endow all authorities and nominators.
-	// 最初的验证人跟endowed_accounts一样  需要同样的金额
 	initial_authorities
 		.iter()
 		.map(|x| &x.0)
@@ -339,7 +337,7 @@ fn configure_accounts(
 	let mut rng = rand::thread_rng();
 	let stakers = initial_authorities
 		.iter()
-		.map(|x| (x.0.clone(), x.0.clone(), stash, StakerStatus::Validator))
+		.map(|x| (x.0.clone(), x.1.clone(), stash, StakerStatus::Validator))
 		.chain(initial_nominators.iter().map(|x| {
 			use rand::{seq::SliceRandom, Rng};
 			let limit = (MaxNominations::get() as usize).min(initial_authorities.len());
@@ -373,61 +371,57 @@ pub fn testnet_genesis(
 	)>,
 	initial_nominators: Vec<AccountId>,
 	root_key: AccountId,
-	// 收钱账号
 	endowed_accounts: Option<Vec<AccountId>>,
 	evm_chain_id: u32,
 ) -> serde_json::Value {
 	let (initial_authorities, endowed_accounts, num_endowed_accounts, stakers) =
 		configure_accounts(initial_authorities, initial_nominators, endowed_accounts, STASH);
 
-	let evm_accounts = {
-		let mut map = BTreeMap::new();
-		map.insert(
-			// H160 address of Alice dev account
-			// Derived from SS58 (42 prefix) address
-			// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
-			// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
-			// Using the full hex key, truncating to the first 20 bytes (the first 40 hex chars)
-			H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558")
-				.expect("internal H160 is valid; qed"),
-			fp_evm::GenesisAccount {
-				balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-					.expect("internal U256 is valid; qed"),
-				code: Default::default(),
-				nonce: Default::default(),
-				storage: Default::default(),
-			},
-		);
-		map.insert(
-			// H160 address of CI test runner account
-			H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b")
-				.expect("internal H160 is valid; qed"),
-			fp_evm::GenesisAccount {
-				balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
-					.expect("internal U256 is valid; qed"),
-				code: Default::default(),
-				nonce: Default::default(),
-				storage: Default::default(),
-			},
-		);
-		map.insert(
-			// H160 address for benchmark usage
-			H160::from_str("1000000000000000000000000000000000000001")
-				.expect("internal H160 is valid; qed"),
-			fp_evm::GenesisAccount {
-				nonce: U256::from(1),
-				balance: U256::from(1_000_000_000_000_000_000_000_000u128),
-				storage: Default::default(),
-				code: vec![0x00],
-			},
-		);
-		map
-	};
+	// let evm_accounts = {
+	// 	let mut map = BTreeMap::new();
+		// map.insert(
+		// 	// H160 address of Alice dev account
+		// 	// Derived from SS58 (42 prefix) address
+		// 	// SS58: 5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY
+		// 	// hex: 0xd43593c715fdd31c61141abd04a99fd6822c8558854ccde39a5684e7a56da27d
+		// 	// Using the full hex key, truncating to the first 20 bytes (the first 40 hex chars)
+		// 	H160::from_str("d43593c715fdd31c61141abd04a99fd6822c8558")
+		// 		.expect("internal H160 is valid; qed"),
+		// 	fp_evm::GenesisAccount {
+		// 		balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
+		// 			.expect("internal U256 is valid; qed"),
+		// 		code: Default::default(),
+		// 		nonce: Default::default(),
+		// 		storage: Default::default(),
+		// 	},
+		// );
+		// map.insert(
+		// 	// H160 address of CI test runner account
+		// 	H160::from_str("6be02d1d3665660d22ff9624b7be0551ee1ac91b")
+		// 		.expect("internal H160 is valid; qed"),
+		// 	fp_evm::GenesisAccount {
+		// 		balance: U256::from_str("0xffffffffffffffffffffffffffffffff")
+		// 			.expect("internal U256 is valid; qed"),
+		// 		code: Default::default(),
+		// 		nonce: Default::default(),
+		// 		storage: Default::default(),
+		// 	},
+		// );
+		// map.insert(
+		// 	// H160 address for benchmark usage
+		// 	H160::from_str("1000000000000000000000000000000000000001")
+		// 		.expect("internal H160 is valid; qed"),
+		// 	fp_evm::GenesisAccount {
+		// 		nonce: U256::from(1),
+		// 		balance: U256::from(1_000_000_000_000_000_000_000_000u128),
+		// 		storage: Default::default(),
+		// 		code: vec![0x00],
+		// 	},
+		// );
+	// 	map
+	// };
 
 	serde_json::json!({
-		// fixme 这个需要自己设置就行了
-		// 如果开发的话使用这个默认配置
-		// todo 需要知道验证人需要抵押多少金额 然后给验证人配置金额
 		"balances": {
 			"balances": endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT)).collect::<Vec<_>>(),
 		},
@@ -437,8 +431,7 @@ pub fn testnet_genesis(
 				.map(|x| {
 					(
 						x.0.clone(),
-						x.0.clone(),
-						// 固定使用sr25519
+						x.1.clone(),
 						session_keys(
 							x.2.clone(),
 							x.3.clone(),
@@ -454,7 +447,6 @@ pub fn testnet_genesis(
 		"staking": {
 			"validatorCount": initial_authorities.len() as u32,
 			"minimumValidatorCount": initial_authorities.len() as u32,
-			// todo 要确定这个会不会因为投票排序被踢出去
 			"invulnerables": initial_authorities.iter().map(|x| x.0.clone()).collect::<Vec<_>>(),
 			"slashRewardFraction": Perbill::from_percent(10),
 			"stakers": stakers.clone(),
@@ -479,16 +471,15 @@ pub fn testnet_genesis(
 			"epochConfig": Some(kitchensink_runtime::BABE_GENESIS_EPOCH_CONFIG),
 		},
 		"society": { "pot": 0 },
-		"assets": {
-			// This asset is used by the NIS pallet as counterpart currency.
-			"assets": vec![(9, get_account_id_from_seed::<ecdsa::Public>("Alice"), true, 1)],
-		},
+		// "assets": {
+		// 	"assets": vec![],
+		// },
 		"nominationPools": {
 			"minCreateBond": 10 * DOLLARS,
 			"minJoinBond": 1 * DOLLARS,
 		},
 		"evmChainId": { "chainId": evm_chain_id },
-		"evm": { "accounts": evm_accounts },
+		// "evm": { "accounts": evm_accounts },
 	})
 }
 
