@@ -852,8 +852,8 @@ const MAX_QUOTA_NOMINATIONS: u32 = 16;
 
 pub struct StakingBenchmarkingConfig;
 impl pallet_staking::BenchmarkingConfig for StakingBenchmarkingConfig {
-	type MaxNominators = ConstU32<1000>;
-	type MaxValidators = ConstU32<1000>;
+	type MaxNominators = ConstU32<100>;
+	type MaxValidators = ConstU32<100>;
 }
 
 impl pallet_staking::Config for Runtime {
