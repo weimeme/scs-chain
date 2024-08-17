@@ -201,8 +201,10 @@ fn staging_testnet_config_genesis() -> serde_json::Value {
 /// Staging testnet config.
 pub fn staging_testnet_config() -> ChainSpec {
 	ChainSpec::builder(wasm_binary_unwrap(), Default::default())
-		.with_name("SCS Testnet")
-		.with_id("scs_testnet")
+		.with_name("TSCS Network")
+		.with_id("tscs_network")
+		.with_protocol_id("scs")
+		.with_fork_id("tscs")
 		.with_properties(serde_json::from_str("{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}")
 							 .expect("Provided valid json map"),)
 		.with_chain_type(ChainType::Live)
