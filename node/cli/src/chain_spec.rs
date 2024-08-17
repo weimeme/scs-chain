@@ -51,8 +51,8 @@ pub use node_primitives::{Balance, Signature};
 type AccountPublic = <Signature as Verify>::Signer;
 
 const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
-const ENDOWMENT: Balance = 100_000000 * DOLLARS;
-const STASH: Balance = ENDOWMENT/100;
+const ENDOWMENT: Balance = 10000 * DOLLARS;
+const STASH: Balance = ENDOWMENT/10;
 
 /// Node `ChainSpec` extensions.
 ///
