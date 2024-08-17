@@ -68,7 +68,30 @@ impl SubstrateCli for Cli {
 						.into(),
 				),
 			"dev" => Box::new(chain_spec::development_config()),
-			// "local" => Box::new(chain_spec::local_testnet_config()),
+			// "local" => Box::new(chain_spec::local_testnet_config()),	// (
+			// 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
+			// 		// 	AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
+			// 		// 	// H160::from_str("3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
+			// 		// 	// H160::from_str("FCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
+			// 		// 	// 5FMAvJiAMDJgvm3WWMF7ahouBeMtf5qsXYSv7hacuSic8TW5
+			// 		// 	array_bytes::hex2array_unchecked("9143ba611eee5bb7bc7d41dfc30429e405ef42be6734d3ca5f86f2ab6299129b")
+			// 		// 		.unchecked_into(),
+			// 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+			// 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+			// 		// 		.unchecked_into(),
+			// 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+			// 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+			// 		// 		.unchecked_into(),
+			// 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+			// 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+			// 		// 		.unchecked_into(),
+			// 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+			// 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+			// 		// 		.unchecked_into(),
+			// 		// 	// 5DnnuaPZq8FYZFHJsyF8WDfTcU7f4t2u8rjX8yEjhbkc3Q7r
+			// 		// 	array_bytes::hex2array_unchecked("03dfb0588ca98d1974feb9c5ac4d8ac5c9b877051e07c80a3db431a75d4861b734")
+			// 		// 		.unchecked_into(),
+			// 		// ),
 			// "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
 			"staging" => Box::new(chain_spec::staging_testnet_config()),
 			path =>

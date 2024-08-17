@@ -156,54 +156,31 @@ fn configure_accounts_for_staging_testnet() -> (
 			array_bytes::hex2array_unchecked("03bc6e0c1d39325743767c29b13a81d065578a03d1c53b1bb37d9f9607155c217f")
 				.unchecked_into(),
 		),
-		(
-			AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
-			AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
-			// H160::from_str("3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
-			// H160::from_str("FCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
-			// 5FMAvJiAMDJgvm3WWMF7ahouBeMtf5qsXYSv7hacuSic8TW5
-			array_bytes::hex2array_unchecked("9143ba611eee5bb7bc7d41dfc30429e405ef42be6734d3ca5f86f2ab6299129b")
-				.unchecked_into(),
-			// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
-			array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
-				.unchecked_into(),
-			// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
-			array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
-				.unchecked_into(),
-			// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
-			array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
-				.unchecked_into(),
-			// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
-			array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
-				.unchecked_into(),
-			// 5DnnuaPZq8FYZFHJsyF8WDfTcU7f4t2u8rjX8yEjhbkc3Q7r
-			array_bytes::hex2array_unchecked("03dfb0588ca98d1974feb9c5ac4d8ac5c9b877051e07c80a3db431a75d4861b734")
-				.unchecked_into(),
-		),
-		(
-			AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
-			AccountId::from(hex!("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e")),
-			// H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
-			// H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
-			// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
-			array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8a")
-				.unchecked_into(),
-			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-				.unchecked_into(),
-			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-				.unchecked_into(),
-			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-				.unchecked_into(),
-			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-				.unchecked_into(),
-			// 5GPGYxmZifrfgGbokX1k8uYYjhL5uAi4Tt5efrZXCcyh49zJ
-			array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d2")
-				.unchecked_into(),
-		),
+
+		// (
+		// 	AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
+		// 	AccountId::from(hex!("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e")),
+		// 	// H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
+		// 	// H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
+		// 	// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
+		// 	array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8a")
+		// 		.unchecked_into(),
+		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+		// 		.unchecked_into(),
+		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+		// 		.unchecked_into(),
+		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+		// 		.unchecked_into(),
+		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+		// 		.unchecked_into(),
+		// 	// 5GPGYxmZifrfgGbokX1k8uYYjhL5uAi4Tt5efrZXCcyh49zJ
+		// 	array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d2")
+		// 		.unchecked_into(),
+		// ),
 	];
 
 	let root_key: AccountId = AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952"));
@@ -345,19 +322,19 @@ fn configure_accounts(
 	let mut rng = rand::thread_rng();
 	let stakers = initial_authorities
 		.iter()
-		.map(|x| (x.0.clone(), x.1.clone(), stash, StakerStatus::Validator))
-		.chain(initial_nominators.iter().map(|x| {
-			use rand::{seq::SliceRandom, Rng};
-			let limit = (MaxNominations::get() as usize).min(initial_authorities.len());
-			let count = rng.gen::<usize>() % limit;
-			let nominations = initial_authorities
-				.as_slice()
-				.choose_multiple(&mut rng, count)
-				.into_iter()
-				.map(|choice| choice.0.clone())
-				.collect::<Vec<_>>();
-			(x.clone(), x.clone(), stash, StakerStatus::Nominator(nominations))
-		}))
+		.map(|x| (x.0.clone(), x.0.clone(), stash, StakerStatus::Validator))
+		// .chain(initial_nominators.iter().map(|x| {
+		// 	use rand::{seq::SliceRandom, Rng};
+		// 	let limit = (MaxNominations::get() as usize).min(initial_authorities.len());
+		// 	let count = rng.gen::<usize>() % limit;
+		// 	let nominations = initial_authorities
+		// 		.as_slice()
+		// 		.choose_multiple(&mut rng, count)
+		// 		.into_iter()
+		// 		.map(|choice| choice.0.clone())
+		// 		.collect::<Vec<_>>();
+		// 	(x.clone(), x.clone(), stash, StakerStatus::Nominator(nominations))
+		// }))
 		.collect::<Vec<_>>();
 
 	let num_endowed_accounts = endowed_accounts.len();
@@ -439,7 +416,7 @@ pub fn testnet_genesis(
 				.map(|x| {
 					(
 						x.0.clone(),
-						x.1.clone(),
+						x.0.clone(),
 						session_keys(
 							x.2.clone(),
 							x.3.clone(),

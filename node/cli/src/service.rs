@@ -308,7 +308,7 @@ pub fn new_partial<NB>(
 		})?;
 
 	let import_setup = (block_import, grandpa_link, babe_link, beefy_voter_links);
-
+	/// todo 判断验证人集合是不是0 是0直接panic
 	let statement_store = sc_statement_store::Store::new_shared(
 		&config.data_path,
 		Default::default(),
