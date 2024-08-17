@@ -131,6 +131,7 @@ fn configure_accounts_for_staging_testnet() -> (
 		BeefyId,
 	)> = vec![
 		// authority_keys_from_alice(),
+		// 	1
 		(
 			// fixme
 			AccountId::from(hex!("6Cf000856e98d31D35ed49FfD87ce6027A65D4f2")),
@@ -157,30 +158,31 @@ fn configure_accounts_for_staging_testnet() -> (
 				.unchecked_into(),
 		),
 
-		// (
-		// 	AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
-		// 	AccountId::from(hex!("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e")),
-		// 	// H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
-		// 	// H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
-		// 	// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
-		// 	array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8a")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-		// 		.unchecked_into(),
-		// 	// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
-		// 	array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
-		// 		.unchecked_into(),
-		// 	// 5GPGYxmZifrfgGbokX1k8uYYjhL5uAi4Tt5efrZXCcyh49zJ
-		// 	array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d2")
-		// 		.unchecked_into(),
-		// ),
+		// 	3
+		(
+			AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
+			AccountId::from(hex!("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e")),
+			// H160::from_str("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952").expect("internal H160 is valid; qed").into(),
+			// H160::from_str("778bb7D4E268AFcC0c535FC89d3b02b7c1e29C5e").expect("internal H160 is valid; qed").into(),
+			// 5Dz8XhNjxggbpFtwzBTHAhc2dohnhdrcsno9TWkEyBZCKzZo
+			array_bytes::hex2array_unchecked("54fb4bd83cf76c27d8d3ad1fdc929ea72cc83dd17f1b1a684c66219e1f773f8a")
+				.unchecked_into(),
+			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+				.unchecked_into(),
+			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+				.unchecked_into(),
+			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+				.unchecked_into(),
+			// 5GBhA2kTNNQqFrDu8uU9DBRHVBVaSF65QXgXwA4ps7SA2DNz
+			array_bytes::hex2array_unchecked("b6454b04a97110d57295eeb2809489f51f7b90b2371182c9c6e5a25d10e7467a")
+				.unchecked_into(),
+			// 5GPGYxmZifrfgGbokX1k8uYYjhL5uAi4Tt5efrZXCcyh49zJ
+			array_bytes::hex2array_unchecked("03d1d9b98aa21984781040f162ad9edc3621aac9359f1cbaa0232535db59f179d2")
+				.unchecked_into(),
+		),
 	];
 
 	let root_key: AccountId = AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952"));
