@@ -51,8 +51,8 @@ pub use node_primitives::{Balance, Signature};
 type AccountPublic = <Signature as Verify>::Signer;
 
 const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
-const ENDOWMENT: Balance = 10000 * DOLLARS;
-const STASH: Balance = ENDOWMENT/10;
+const ENDOWMENT: Balance = 100 * DOLLARS;
+const STASH: Balance = ENDOWMENT;
 
 /// Node `ChainSpec` extensions.
 ///
@@ -185,8 +185,7 @@ fn configure_accounts_for_staging_testnet() -> (
 		),
 	];
 
-	let root_key: AccountId = AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952"));
-	// let root_key: AccountId = H160::from_str("79BD79C274C845E8a29378513c0053b19395E863").expect("internal H160 is valid; qed").into();
+	let root_key: AccountId = AccountId::from(hex!("79BD79C274C845E8a29378513c0053b19395E863"));
 
 	let endowed_accounts: Vec<AccountId> = vec![root_key.clone()];
 	(initial_authorities, root_key, endowed_accounts)
