@@ -194,8 +194,12 @@ fn configure_accounts_for_staging_testnet() -> (
 fn staging_testnet_config_genesis() -> serde_json::Value {
 	let (initial_authorities, root_key, endowed_accounts) =
 		configure_accounts_for_staging_testnet();
+	let extra_endowed_accounts_balance = vec![
+		(AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")), 100_000_000 * DOLLARS),
+		(AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")), 50_000_000 * DOLLARS),
+	];
 	// 测试网的链id是1969
-	testnet_genesis(initial_authorities, vec![], root_key, Some(endowed_accounts), 1969u32)
+	testnet_genesis(initial_authorities, vec![], root_key, Some(endowed_accounts), extra_endowed_accounts_balance, 1969u32)
 }
 
 /// Staging testnet config.
@@ -360,6 +364,7 @@ pub fn testnet_genesis(
 	initial_nominators: Vec<AccountId>,
 	root_key: AccountId,
 	endowed_accounts: Option<Vec<AccountId>>,
+	extra_endowed_accounts_balance: Vec<(AccountId, u128)>,
 	evm_chain_id: u32,
 ) -> serde_json::Value {
 	let (initial_authorities, endowed_accounts, num_endowed_accounts, stakers) =
@@ -411,7 +416,7 @@ pub fn testnet_genesis(
 
 	serde_json::json!({
 		"balances": {
-			"balances": endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT)).collect::<Vec<_>>(),
+			"balances": endowed_accounts.iter().cloned().map(|x| (x, ENDOWMENT)).chain(extra_endowed_accounts_balance).collect::<Vec<_>>(),
 		},
 		"session": {
 			"keys": initial_authorities
@@ -483,6 +488,7 @@ fn development_config_genesis_json() -> serde_json::Value {
 		vec![],
 		AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
 		Some(vec![AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))]),
+		vec![],
 		42u32,
 	)
 }
