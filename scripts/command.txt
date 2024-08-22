@@ -1,6 +1,6 @@
 
 # start dev network
-./substrate-node --dev --database auto --base-path /data/chain/db --pruning archive   --rpc-methods=Unsafe --rpc-cors=all --unsafe-rpc-external
+./substrate-node --dev --database auto --base-path /coin/chain/db --pruning archive   --rpc-methods=Unsafe --rpc-cors=all --unsafe-rpc-external
 
 # bootnode and nginx setting
 https://wiki.polkadot.network/docs/maintain-bootnode
