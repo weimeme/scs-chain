@@ -16,7 +16,7 @@ cargo build --release
 
 ## Docker
 
-### build
+### build (if you are developer)
 <!-- ```
 docker buildx build create --name mybuilder --use
 ```
@@ -27,10 +27,28 @@ docker login
 docker buildx build --platform linux/amd64 -t tscs-node:latest -f normal-node.Dockerfile .
 ```
 
+```
+docker login
+```
+
+```
+docker tag  tscs-node:latest <yourname>/tscs-node:latest
+
+```
+
+```
+docker push <yourname>/tscs-node
+
+```
 
 <!-- ```
 docker build -t tscs-node:latest -f normal-node.Dockerfile .
 ``` -->
+
+### pull
+```
+docker pull tscs-node
+```
 
 ### run dev network
 
