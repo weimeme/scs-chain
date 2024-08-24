@@ -76,6 +76,9 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // 	ChainSpec::from_json_bytes(&include_bytes!("../res/flaming-fir.json")[..])
 // }
 
+pub fn tscs_config() -> Result<ChainSpec, String> {
+	ChainSpec::from_json_bytes(&include_bytes!("./chain-spec.json")[..])
+}
 fn session_keys(
 	// ed25519
 	grandpa: GrandpaId,

@@ -93,7 +93,8 @@ impl SubstrateCli for Cli {
 			// 		// 		.unchecked_into(),
 			// 		// ),
 			// "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
-			"staging" => Box::new(chain_spec::staging_testnet_config()),
+			"staging" => Box::new(chain_spec::tscs_config()?),
+			"local" => Box::new(chain_spec::staging_testnet_config()),
 			path =>
 				Box::new(chain_spec::ChainSpec::from_json_file(std::path::PathBuf::from(path))?),
 		};

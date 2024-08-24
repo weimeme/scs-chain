@@ -46,5 +46,5 @@ USER scs
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
 # 生成node-key和启动节点
-ENTRYPOINT ["/usr/local/bin/scs", "--chain", "staging", "--base-path", "/data/db" ,"--database", "auto",  "--validator" ]
+ENTRYPOINT ["/usr/local/bin/scs", "--chain", "staging", "--database", "auto",  "--validator" ]
 CMD [ "--help" ]
