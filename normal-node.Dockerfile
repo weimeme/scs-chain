@@ -24,6 +24,11 @@ LABEL description="Multistage Docker image for TSCS Network: a platform for web3
 	io.parity.image.vendor="SuperEx" 
 
 COPY --from=builder /scs/target/release/scs /usr/local/bin
+COPY --from=builder /scs/scripts/validator_node_init.sh /usr/local/bin
+
+ENV BASE_PATH=/data/db
+ENV SESSION_KEYS_PASSWORD=root
+ENV SESSION_KEYS_INDEX=0
 
 RUN useradd -m -u 1000 -U -s /bin/base -d /scs scs && \
 	mkdir -p /data /scs/.local/share/scs && \
@@ -33,9 +38,13 @@ RUN useradd -m -u 1000 -U -s /bin/base -d /scs scs && \
 	ldd /usr/local/bin/scs && \
 # # unclutter and minimize the attack surface
 # 	rm -rf /usr/bin /usr/sbin && \
-	/usr/local/bin/scs --version 
+    chmod 777 /usr/local/bin/validator_node_init.sh && \
+	/usr/local/bin/scs --version
 
 # RUN /usr/local/bin/scs --version 
 USER scs
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
+# 生成node-key和启动节点
+ENTRYPOINT ["/usr/local/bin/scs", "--chain", "staging", "--base-path", "/data/db" ,"--database", "auto",  "--validator" ]
+CMD [ "--help" ]

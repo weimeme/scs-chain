@@ -1,0 +1,79 @@
+version: '1.0'
+
+services:
+
+  node11:
+    image: tscs-node:latest
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    volumes:
+      - /System/Volumes/Data/node1:/data
+
+  node:
+    image: tscs-node:latest
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    volumes:
+      - /System/Volumes/Data/node3:/data
+
+  node1:
+    image: tscs-node:latest
+    networks:
+      - scs-testnet
+    command: ["--rpc-methods", "Unsafe", "--rpc-cors", "all", "--unsafe-rpc-external"]
+    environment:
+      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_INDEX=1
+    ports:
+      - 30333:30333
+      - 9944:9944
+      - 9933:9933
+    
+    volumes:
+      - /System/Volumes/Data/node1:/data
+    
+    deploy:
+      resources:
+        limits:
+          cpus: '12'
+          memory: '18G'
+        reservations:
+          cpus: '6'
+          memory: '12G'
+
+
+
+
+  node3:
+    image: tscs-node:latest
+    networks:
+      - scs-testnet
+    environment:
+      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_INDEX=3
+    ports:
+      - 30334:30333
+      - 9945:9944
+      - 9934:9933
+
+    volumes:
+      - /System/Volumes/Data/node3:/data
+
+    command: ["--rpc-methods", "Unsafe", "--rpc-cors", "all", "--unsafe-rpc-external", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWH467ThuvLnEMKLkDLtPx4tKjUti4axmvqxUJLvA5WS1A"]
+
+    deploy:
+      resources:
+        limits:
+          cpus: '12'
+          memory: '18G'
+        reservations:
+          cpus: '6'
+          memory: '12G'
+
+    depends_on:
+      - node1 # 依赖第一个服务
+
+
+networks:
+  scs-testnet:
+    driver: bridge
+    
+    

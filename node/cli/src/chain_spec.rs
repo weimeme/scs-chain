@@ -483,12 +483,16 @@ pub fn testnet_genesis(
 
 
 fn development_config_genesis_json() -> serde_json::Value {
+	let extra_endowed_accounts_balance = vec![
+		(AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")), 100_000_000 * DOLLARS),
+		(AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")), 50_000_000 * DOLLARS),
+	];
 	testnet_genesis(
 		vec![authority_keys_from_alice()],// vec![AccountId::from(hex!("d43593c715fdd31c61141abd04a99fd6822c8558"))],
 		vec![],
 		AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac")),
 		Some(vec![AccountId::from(hex!("f24FF3a9CF04c71Dbc94D0b566f7A27B94566cac"))]),
-		vec![],
+		extra_endowed_accounts_balance,
 		42u32,
 	)
 }
