@@ -45,6 +45,5 @@ RUN useradd -m -u 1000 -U -s /bin/base -d /scs scs && \
 USER scs
 EXPOSE 30333 9933 9944 9615
 VOLUME ["/data"]
-# 生成node-key和启动节点
-ENTRYPOINT ["/usr/local/bin/scs", "--chain", "staging", "--database", "auto",  "--validator", "--base-path", "/data" ]
+ENTRYPOINT ["/usr/local/bin/scs", "--chain", "staging", "--database", "auto", "--base-path", "/data" ]
 CMD [ "--help" ]
