@@ -2,13 +2,13 @@ version: '1.0'
 
 services:
 
-  node11:
+  init_node1:
     image: tscs-node:latest
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     volumes:
       - ./node1:/data
 
-  node:
+  init_node3:
     image: tscs-node:latest
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     volumes:

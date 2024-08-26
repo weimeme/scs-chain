@@ -23,8 +23,9 @@ docker buildx build create --name mybuilder --use
 ```
 docker login
 ``` -->
+```
 
-docker buildx build --platform linux/amd64 -t tscs-node:latest -f normal-node.Dockerfile .
+docker buildx build --platform --load linux/amd64 -t tscs-node:latest -f normal-node.Dockerfile .
 ```
 
 ```
