@@ -2,23 +2,31 @@ version: '1.0'
 
 services:
 
+  init_rpc_node:
+    image: tscs-node:latest
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    volumes:
+      - ./rpc_node1:/data 
+  
+
+  rpc_node:
+    image: tscs-node:latest
+    command: ["--pruning", "archive", “--rpc-max-connections", "100"]
+    volumes:
+      - ./rpc_node1:/data 
+
   init_node1:
     image: tscs-node:latest
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    environment:
+      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_INDEX=1
     volumes:
       - ./node1:/data
 
-  init_node3:
-    image: tscs-node:latest
-    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
-    volumes:
-      - ./node3:/data
-
   node1:
     image: tscs-node:latest
-    # networks:
-    #   - scs-testnet
-    command: ["--rpc-methods", "Unsafe", "--rpc-cors", "all", "--unsafe-rpc-external"]
+    command: ["--pruning", "archive","--validator", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWA2rwQvFZ7RWo53Aggm4RA7rP2VNqzvtjBqvNaDqwUrZz"]
     environment:
       - SESSION_KEYS_PASSWORD=wjy
       - SESSION_KEYS_INDEX=1
@@ -40,12 +48,18 @@ services:
           memory: '12G'
 
 
+  init_node3:
+    image: tscs-node:latest
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    environment:
+      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_INDEX=3
+    volumes:
+      - ./node3:/data
 
 
   node3:
     image: tscs-node:latest
-    # networks:
-    #   - scs-testnet
     environment:
       - SESSION_KEYS_PASSWORD=wjy
       - SESSION_KEYS_INDEX=3
@@ -57,7 +71,7 @@ services:
     volumes:
     - ./node3:/data
 
-    command: ["--rpc-methods", "Unsafe", "--rpc-cors", "all", "--unsafe-rpc-external", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWA2rwQvFZ7RWo53Aggm4RA7rP2VNqzvtjBqvNaDqwUrZz"]
+    command: ["--pruning", "archive","--validator", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWA2rwQvFZ7RWo53Aggm4RA7rP2VNqzvtjBqvNaDqwUrZz"]
 
     deploy:
       resources:
@@ -69,11 +83,6 @@ services:
           memory: '12G'
 
     depends_on:
-      - node1 # 依赖第一个服务
-
-
-# networks:
-#   scs-testnet:
-#     driver: bridge
+      - node1 
     
     
