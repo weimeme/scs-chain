@@ -6,14 +6,21 @@ services:
     image: tscs-node:latest
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     volumes:
-      - ./rpc_node1:/data 
-  
+      - ./rpc_node:/data 
+
 
   rpc_node:
     image: tscs-node:latest
-    command: ["--pruning", "archive", “--rpc-max-connections", "100"]
+    command: ["--pruning", "archive", "--rpc-max-connections", "100"]
     volumes:
-      - ./rpc_node1:/data 
+      - ./rpc_node:/data 
+    ports:
+      - 30333:30333
+      - 9944:9944
+      - 9933:9933
+    networks:
+      - tscs
+    
 
   init_node1:
     image: tscs-node:latest
@@ -26,17 +33,19 @@ services:
 
   node1:
     image: tscs-node:latest
-    command: ["--pruning", "archive","--validator", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWA2rwQvFZ7RWo53Aggm4RA7rP2VNqzvtjBqvNaDqwUrZz"]
+    command: ["--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
     environment:
       - SESSION_KEYS_PASSWORD=wjy
       - SESSION_KEYS_INDEX=1
     ports:
-      - 30333:30333
-      - 9944:9944
+      - 30334:30333
+      - 9945:9944
       - 9934:9933
     
     volumes:
       - ./node1:/data
+    networks:
+      - tscs
     
     deploy:
       resources:
@@ -64,14 +73,15 @@ services:
       - SESSION_KEYS_PASSWORD=wjy
       - SESSION_KEYS_INDEX=3
     ports:
-      - 30333:30333
-      - 9944:9944
-      - 9933:9933
+      - 30335:30334
+      - 9946:9944
+      - 9935:9934
 
     volumes:
     - ./node3:/data
-
-    command: ["--pruning", "archive","--validator", "--reserved-nodes", "/dns/node1/tcp/30333/p2p/12D3KooWA2rwQvFZ7RWo53Aggm4RA7rP2VNqzvtjBqvNaDqwUrZz"]
+    command: ["--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
+    networks:
+      - tscs
 
     deploy:
       resources:
@@ -84,5 +94,10 @@ services:
 
     depends_on:
       - node1 
+
+
+networks:
+  tscs:
+    driver: bridge
     
     
