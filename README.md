@@ -25,7 +25,7 @@ docker login
 ``` -->
 ```
 
-docker buildx build --platform --load linux/amd64 -t tscs-node:latest -f normal-node.Dockerfile .
+docker buildx build --platform --load linux/amd64 -t tscs-node:latest -f node.Dockerfile .
 ```
 
 ```

@@ -41,3 +41,4 @@ rls*.log
 runtime/wasm/target/
 substrate.code-workspace
 target/
+tscs-docker-compose.yml
