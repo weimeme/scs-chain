@@ -42,3 +42,6 @@ runtime/wasm/target/
 substrate.code-workspace
 target/
 tscs-docker-compose.yml
+rpc_node/
+node1/
+node2/
