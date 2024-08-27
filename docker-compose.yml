@@ -2,40 +2,36 @@ version: '1.0'
 
 services:
 
-  init_rpc_node:
-    image: tscs-node:latest
-    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+  init_full_node:
+    image: wjyask/tscs-node:1.0
+    entrypoint: ["bash", "-c", "/usr/local/bin/normal_node_init.sh"]
     volumes:
-      - ./rpc_node:/data 
+      - ./full_node:/data 
 
 
-  rpc_node:
-    image: tscs-node:latest
-    command: ["--pruning", "archive", "--rpc-max-connections", "100"]
+  full_node:
+    image: wjyask/tscs-node:1.0
+    command: ["--pruning", "archive", "--rpc-max-connections", "100", "--rpc-cors=all"]
     volumes:
-      - ./rpc_node:/data 
+      - ./full_node:/data 
     ports:
       - 30333:30333
-      - 9944:9944
+      - 8545:9944 # 兼容以太坊 
       - 9933:9933
-    networks:
-      - tscs
     
 
-  init_node1:
-    image: tscs-node:latest
+  init_validator_node1:
+    image: wjyask/tscs-node:1.0
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     environment:
-      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_PASSWORD=root
       - SESSION_KEYS_INDEX=1
-    volumes:
-      - ./node1:/data
 
-  node1:
-    image: tscs-node:latest
-    command: ["--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
+  validator_node1:
+    image: wjyask/tscs-node:1.0
+    command: ["--validator", "--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
     environment:
-      - SESSION_KEYS_PASSWORD=wjy
+      - SESSION_KEYS_PASSWORD=root
       - SESSION_KEYS_INDEX=1
     ports:
       - 30334:30333
@@ -44,8 +40,6 @@ services:
     
     volumes:
       - ./node1:/data
-    networks:
-      - tscs
     
     deploy:
       resources:
@@ -57,31 +51,29 @@ services:
           memory: '12G'
 
 
-  init_node3:
-    image: tscs-node:latest
+  init_validator_node2:
+    image: wjyask/tscs-node:1.0
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     environment:
-      - SESSION_KEYS_PASSWORD=wjy
-      - SESSION_KEYS_INDEX=3
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=2
     volumes:
-      - ./node3:/data
+      - ./node2:/data
 
 
-  node3:
-    image: tscs-node:latest
+  validator_node2:
+    image: wjyask/tscs-node:1.0
     environment:
-      - SESSION_KEYS_PASSWORD=wjy
-      - SESSION_KEYS_INDEX=3
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=2
     ports:
       - 30335:30334
       - 9946:9944
       - 9935:9934
 
     volumes:
-    - ./node3:/data
-    command: ["--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
-    networks:
-      - tscs
+    - ./node2:/data
+    command: ["--validator", "--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
 
     deploy:
       resources:
@@ -96,8 +88,8 @@ services:
       - node1 
 
 
-networks:
-  tscs:
-    driver: bridge
+# networks:
+#   tscs:
+#     driver: bridge
     
     

@@ -25,6 +25,7 @@ LABEL description="Multistage Docker image for TSCS Network: a platform for web3
 
 COPY --from=builder /scs/target/release/scs /usr/local/bin
 COPY --from=builder /scs/scripts/validator_node_init.sh /usr/local/bin
+COPY --from=builder /scs/scripts/normal_node_init.sh /usr/local/bin
 
 ENV BASE_PATH=/data
 ENV SESSION_KEYS_PASSWORD=root
@@ -39,6 +40,7 @@ RUN useradd -m -u 1000 -U -s /bin/base -d /scs scs && \
 # # unclutter and minimize the attack surface
 # 	rm -rf /usr/bin /usr/sbin && \
     chmod 777 /usr/local/bin/validator_node_init.sh && \
+	chmod 777 /usr/local/bin/normal_node_init.sh && \
 	/usr/local/bin/scs --version
 
 # RUN /usr/local/bin/scs --version 
