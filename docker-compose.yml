@@ -1,16 +1,16 @@
-version: '1.0'
+version: '1.0.0'
 
 services:
 
   init_full_node:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     entrypoint: ["bash", "-c", "/usr/local/bin/normal_node_init.sh"]
     volumes:
       - ./full_node:/data 
 
 
   full_node:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     command: ["--pruning", "archive", "--rpc-max-connections", "100", "--rpc-cors=all"]
     volumes:
       - ./full_node:/data 
@@ -21,14 +21,14 @@ services:
     
 
   init_validator_node1:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     environment:
       - SESSION_KEYS_PASSWORD=root
       - SESSION_KEYS_INDEX=1
 
   validator_node1:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     command: ["--validator", "--pruning", "archive", "--reserved-nodes", "/ip4/127.0.0.1/tcp/30333/p2p/12D3KooWDLfW4jqc39rpBM2dS4UDp9TEqu2MbLrffEDp2bTQt61Q"]
     environment:
       - SESSION_KEYS_PASSWORD=root
@@ -52,7 +52,7 @@ services:
 
 
   init_validator_node2:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
     environment:
       - SESSION_KEYS_PASSWORD=root
@@ -62,7 +62,7 @@ services:
 
 
   validator_node2:
-    image: wjyask/tscs-node:1.0
+    image: wjyask/tscs-node:1.0.0
     environment:
       - SESSION_KEYS_PASSWORD=root
       - SESSION_KEYS_INDEX=2
