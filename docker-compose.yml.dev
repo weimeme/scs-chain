@@ -1,0 +1,103 @@
+version: '1.0.0'
+
+services:
+
+  init_full_node:
+    image: wjyask/tscs-node
+    entrypoint: ["bash", "-c", "/usr/local/bin/normal_node_init.sh"]
+    volumes:
+      - ./full_node:/data 
+
+
+  full_node:
+    image: wjyask/tscs-node
+    # --rpc-methods=Unsafe --rpc-cors=all --unsafe-rpc-external
+    command: ["--pruning", "archive", "--rpc-max-connections", "100", "--rpc-cors=all", "--rpc-methods", "Unsafe", "--unsafe-rpc-external"]
+    volumes:
+      - ./full_node:/data 
+    ports:
+      - 30333:30333
+      - 8545:9944 # 兼容以太坊 
+      - 9933:9933
+    networks:
+      - tscs
+    
+
+  init_validator_node1:
+    image: wjyask/tscs-node
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    environment:
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=1
+    volumes:
+      - ./node1:/data
+
+  validator_node1:
+    image: wjyask/tscs-node
+    command: ["--validator", "--pruning", "archive", "--reserved-nodes", "/ip4/172.20.0.2/tcp/30333/ws/p2p/12D3KooWSfqzw3M6P9H1jKYFJVgiFKiQaDgZmWMG1KshDAAD2Kma"]
+    environment:
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=1
+    ports:
+      - 30334:30333
+      - 9945:9944
+      - 9934:9933
+    
+    volumes:
+      - ./node1:/data
+    
+    networks:
+      - tscs
+    deploy:
+      resources:
+        limits:
+          cpus: '12'
+          memory: '18G'
+        reservations:
+          cpus: '6'
+          memory: '12G'
+
+
+  init_validator_node2:
+    image: wjyask/tscs-node
+    entrypoint: ["bash", "-c", "/usr/local/bin/validator_node_init.sh"]
+    environment:
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=2
+    volumes:
+      - ./node2:/data
+
+
+  validator_node2:
+    image: wjyask/tscs-node
+    environment:
+      - SESSION_KEYS_PASSWORD=root
+      - SESSION_KEYS_INDEX=2
+    ports:
+      - 30335:30334
+      - 9946:9944
+      - 9935:9934
+
+    volumes:
+    - ./node2:/data
+    command: ["--validator", "--pruning", "archive", "--reserved-nodes", "/ip4/172.20.0.2/tcp/30333/ws/p2p/12D3KooWSfqzw3M6P9H1jKYFJVgiFKiQaDgZmWMG1KshDAAD2Kma"]
+    networks:
+      - tscs
+    deploy:
+      resources:
+        limits:
+          cpus: '12'
+          memory: '18G'
+        reservations:
+          cpus: '6'
+          memory: '12G'
+
+    depends_on:
+      - init_validator_node1
+
+
+networks:
+  tscs:
+    driver: bridge
+    
+    
