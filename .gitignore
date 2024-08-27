@@ -45,3 +45,5 @@ tscs-docker-compose.yml
 rpc_node/
 node1/
 node2/
+full_node/
+docker-compose.yml
