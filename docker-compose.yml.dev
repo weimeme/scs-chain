@@ -13,7 +13,6 @@ services:
     image: wjyask/tscs-node
     # , "--rpc-methods", "Unsafe", "--unsafe-rpc-external
     command: ["--pruning", "archive", "--rpc-max-connections", "100", "--rpc-cors", "all"]
-    command: ["--pruning", "archive", "--rpc-max-connections", "100", "--rpc-cors=all"]
     volumes:
       - ./full_node:/data 
     ports:
