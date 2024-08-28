@@ -47,3 +47,4 @@ node1/
 node2/
 full_node/
 docker-compose.yml
+private/
