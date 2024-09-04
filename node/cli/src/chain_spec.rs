@@ -50,7 +50,7 @@ pub use node_primitives::{Balance, Signature};
 
 type AccountPublic = <Signature as Verify>::Signer;
 
-const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
+// const STAGING_TELEMETRY_URL: &str = "wss://telemetry.polkadot.io/submit/";
 const ENDOWMENT: Balance = 100 * DOLLARS;
 const STASH: Balance = ENDOWMENT;
 
@@ -215,10 +215,10 @@ pub fn staging_testnet_config() -> ChainSpec {
 							 .expect("Provided valid json map"),)
 		.with_chain_type(ChainType::Live)
 		.with_genesis_config_patch(staging_testnet_config_genesis())
-		.with_telemetry_endpoints(
-			TelemetryEndpoints::new(vec![(STAGING_TELEMETRY_URL.to_string(), 0)])
-				.expect("Staging telemetry url is valid; qed"),
-		)
+		// .with_telemetry_endpoints(
+		// 	TelemetryEndpoints::new(vec![(STAGING_TELEMETRY_URL.to_string(), 0)])
+		// 		.expect("Staging telemetry url is valid; qed"),
+		// )
 		.build()
 }
 
