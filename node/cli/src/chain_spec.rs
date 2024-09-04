@@ -136,7 +136,7 @@ fn configure_accounts_for_staging_testnet() -> (
 		// 	1
 		(
 			AccountId::from(hex!("6816562B9589ccf4297952A8558A0451c1EB5aEc")),
-			AccountId::from(hex!("6816562B9589ccf4297952A8558A0451c1EB5aEc")),
+			AccountId::from(hex!("7b40aAD2388f62f21bbDeb2272995893d6e311a4")),
 
 			// 5Ch6ttXs15pWBa4R2kB8RUiw7JHuChPANj6iXF1AZHQmz7cG
 			array_bytes::hex2array_unchecked("1bc2636a29f850f49a69ccb416cd14812759651205d6b655298307f9365e9364")
@@ -163,7 +163,7 @@ fn configure_accounts_for_staging_testnet() -> (
 		// 2
 		(
 			AccountId::from(hex!("3E3d44a81C8773d7C27270E2f9830f25d87a5f41")),
-			AccountId::from(hex!("3E3d44a81C8773d7C27270E2f9830f25d87a5f41")),
+			AccountId::from(hex!("90390b2E136a7482E8432cA5B03D5faEef8E5003")),
 			
 			// 5GzwG5sGrPevSYRcjWnw4JwkMD27dKTEXnxfunYPEyZjSzru
 			array_bytes::hex2array_unchecked("da4d4e7d925a0a2134ba624f74be93577beab7052da6730e8b3e70e57c20b099")
