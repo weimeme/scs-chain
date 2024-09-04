@@ -486,6 +486,7 @@ pub fn testnet_genesis(
 
 fn development_config_genesis_json() -> serde_json::Value {
 	let extra_endowed_accounts_balance = vec![
+		(AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")), 100_000_000 * DOLLARS),
 		(AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")), 100_000_000 * DOLLARS),
 		(AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")), 50_000_000 * DOLLARS),
 	];
