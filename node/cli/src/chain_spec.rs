@@ -194,27 +194,28 @@ fn configure_accounts_for_staging_testnet() -> (
 	(initial_authorities, root_key, endowed_accounts)
 }
 
-fn staging_testnet_config_genesis() -> serde_json::Value {
+fn staging_testnet_config_genesis(chain_id: u32) -> serde_json::Value {
 	let (initial_authorities, root_key, endowed_accounts) =
 		configure_accounts_for_staging_testnet();
 	let extra_endowed_accounts_balance = vec![
 		(AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")), 100_000_000 * DOLLARS),
 		(AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")), 50_000_000 * DOLLARS),
 	];
-	testnet_genesis(initial_authorities, vec![], root_key, Some(endowed_accounts), extra_endowed_accounts_balance, 1969u32)
+	testnet_genesis(initial_authorities, vec![], root_key, Some(endowed_accounts), extra_endowed_accounts_balance, chain_id)
 }
 
 /// Staging testnet config.
 pub fn staging_testnet_config() -> ChainSpec {
+	let chain_id = 1969u32;
 	ChainSpec::builder(wasm_binary_unwrap(), Default::default())
-		.with_name("TSCS Network")
-		.with_id("tscs_network")
+		.with_name("Super Smart Chain Testnet")
+		.with_id("tscs")
 		.with_protocol_id("scs")
 		.with_fork_id("tscs")
 		.with_properties(serde_json::from_str("{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}")
 							 .expect("Provided valid json map"),)
 		.with_chain_type(ChainType::Live)
-		.with_genesis_config_patch(staging_testnet_config_genesis())
+		.with_genesis_config_patch(staging_testnet_config_genesis(chain_id))
 		// .with_telemetry_endpoints(
 		// 	TelemetryEndpoints::new(vec![(STAGING_TELEMETRY_URL.to_string(), 0)])
 		// 		.expect("Staging telemetry url is valid; qed"),
