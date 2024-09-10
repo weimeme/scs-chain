@@ -1,12 +1,12 @@
+pub use crate::cli::{BackendType, EthConfiguration};
+use futures::{future, prelude::*};
+use polkadot_sdk::*;
 use std::{
     collections::BTreeMap,
     path::PathBuf,
     sync::{Arc, Mutex},
     time::Duration,
 };
-use polkadot_sdk::*;
-pub use crate::cli::{EthConfiguration, BackendType};
-use futures::{future, prelude::*};
 // Substrate
 use sc_client_api::BlockchainEvents;
 use sc_executor::HostFunctions;
@@ -30,8 +30,6 @@ pub fn db_config_dir(config: &Configuration) -> PathBuf {
     config.base_path.config_dir(config.chain_spec.id())
 }
 
-
-
 pub struct FrontierPartialComponents {
     pub filter_pool: Option<FilterPool>,
     pub fee_history_cache: FeeHistoryCache,
@@ -50,9 +48,9 @@ pub fn new_frontier_partial(
 
 /// A set of APIs that ethereum-compatible runtimes must implement.
 pub trait EthCompatRuntimeApiCollection<Block: BlockT>:
-sp_api::ApiExt<Block>
-+ fp_rpc::ConvertTransactionRuntimeApi<Block>
-+ fp_rpc::EthereumRuntimeRPCApi<Block>
+    sp_api::ApiExt<Block>
+    + fp_rpc::ConvertTransactionRuntimeApi<Block>
+    + fp_rpc::EthereumRuntimeRPCApi<Block>
 {
 }
 
@@ -97,7 +95,7 @@ pub fn spawn_frontier_tasks<B, RA, HF>(
                     sync,
                     pubsub_notification_sinks,
                 )
-                    .for_each(|()| future::ready(())),
+                .for_each(|()| future::ready(())),
             );
         }
 
@@ -146,11 +144,10 @@ pub fn spawn_frontier_tasks<B, RA, HF>(
     );
 }
 
-
 impl<Block, Api> EthCompatRuntimeApiCollection<Block> for Api
-    where
-        Block: BlockT,
-        Api: sp_api::ApiExt<Block>
+where
+    Block: BlockT,
+    Api: sp_api::ApiExt<Block>
         + fp_rpc::ConvertTransactionRuntimeApi<Block>
         + fp_rpc::EthereumRuntimeRPCApi<Block>,
 {

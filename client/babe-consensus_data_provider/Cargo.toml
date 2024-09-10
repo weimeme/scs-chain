@@ -1,5 +1,5 @@
 [package]
-name = "babe-consensus_data_provider"
+name = "babe-consensus-data-provider"
 version = "0.1.0"
 authors.workspace = true
 edition.workspace = true

@@ -52,7 +52,7 @@ serde_json = { workspace = true, default-features = true }
 polkadot-sdk = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", features = ["node"] }
 
 # Shared code between the staging node and kitchensink runtime:
-kitchensink-runtime = { path = "../../runtime" }
+kitchensink-mainnet-runtime = { path = "../../runtime/mainnet" }
 node-rpc = { path = "../rpc" }
 node-primitives = { path = "../primitives" }
 node-inspect = { package = "staging-node-inspect", path = "../inspect", optional = true }
@@ -114,12 +114,12 @@ cli = [
 	"polkadot-sdk",
 ]
 runtime-benchmarks = [
-	"kitchensink-runtime/runtime-benchmarks",
+	"kitchensink-mainnet-runtime/runtime-benchmarks",
 	"node-inspect?/runtime-benchmarks",
 	"polkadot-sdk/runtime-benchmarks",
 ]
 try-runtime = [
-	"kitchensink-runtime/try-runtime",
+	"kitchensink-mainnet-runtime/try-runtime",
 	"polkadot-sdk/try-runtime",
 	"substrate-cli-test-utils/try-runtime",
 ]

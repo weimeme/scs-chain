@@ -24,7 +24,7 @@
 //
 // use polkadot_sdk::*;
 //
-// use kitchensink_runtime::{BalancesCall, SystemCall};
+// use kitchensink_mainnet_runtime::{BalancesCall, SystemCall};
 // use node_primitives::{AccountId, Balance};
 // use sc_cli::Result;
 // use sp_inherents::{InherentData, InherentDataProvider};

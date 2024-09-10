@@ -5999,7 +5999,7 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "c33070833c9ee02266356de0c43f723152bd38bd96ddf52c82b3af10c9138b28"
 
 [[package]]
-name = "kitchensink-runtime"
+name = "kitchensink-mainnet-runtime"
 version = "3.0.0-dev"
 dependencies = [
  "fp-account",
@@ -7487,7 +7487,7 @@ dependencies = [
  "fc-storage",
  "fp-rpc",
  "jsonrpsee",
- "kitchensink-runtime 3.0.0-dev",
+ "kitchensink-mainnet-runtime",
  "mmr-rpc",
  "pallet-transaction-payment-rpc",
  "sc-chain-spec",
@@ -16811,7 +16811,7 @@ dependencies = [
  "futures",
  "hex-literal",
  "jsonrpsee",
- "kitchensink-runtime 3.0.0-dev",
+ "kitchensink-mainnet-runtime",
  "log",
  "nix 0.28.0",
  "node-primitives 2.0.0",
@@ -16846,7 +16846,7 @@ dependencies = [
  "clap_complete",
  "futures",
  "jsonrpsee",
- "kitchensink-runtime 3.0.0-dev (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
+ "kitchensink-runtime",
  "log",
  "node-primitives 2.0.0 (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",
  "node-rpc 3.0.0-dev (git+https://github.com/paritytech/polkadot-sdk?branch=release-polkadot-v1.13.0)",

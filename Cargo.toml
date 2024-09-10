@@ -14,7 +14,7 @@ members = [
     "node/inspect",
     "node/primitives",
     "node/rpc",
-    "runtime",
+    "runtime/mainnet",
 #    "utils/subkey",
 ]
 

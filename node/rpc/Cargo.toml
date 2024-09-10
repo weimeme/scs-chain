@@ -17,8 +17,7 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 jsonrpsee = { version = "0.22", features = ["server"] }
-kitchensink-runtime = { path = "../../runtime" }
-
+kitchensink-mainnet-runtime = { path = "../../runtime/mainnet" }
 fp-rpc = { workspace = true,  features = ["std"]}
 fc-api = { workspace = true}
 fc-mapping-sync = { workspace = true}

@@ -2,12 +2,12 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
 // Substrate
+use kitchensink_mainnet_runtime::opaque::Block;
 use sc_client_api::{
     backend::{Backend, StorageProvider},
     client::BlockchainEvents,
     AuxStore, UsageProvider,
 };
-use kitchensink_runtime::opaque::Block;
 use sc_network::service::traits::NetworkService;
 use sc_network_sync::SyncingService;
 use sc_rpc::SubscriptionTaskExecutor;
@@ -78,24 +78,27 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
         >,
     >,
 ) -> Result<RpcModule<()>, Box<dyn std::error::Error + Send + Sync>>
-    where
-        // B: BlockT,
-        C: CallApiAt<Block> + ProvideRuntimeApi<Block>,
-        C::Api: BlockBuilderApi<Block>
-        + ConvertTransactionRuntimeApi<Block>
-        + EthereumRuntimeRPCApi<Block>,
-        C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError>,
-        C: BlockchainEvents<Block> + AuxStore + UsageProvider<Block> + StorageProvider<Block, BE> + 'static,
-        BE: Backend<Block> + 'static,
-        P: TransactionPool<Block = Block> + 'static,
-        A: ChainApi<Block = Block> + 'static,
-        CT: ConvertTransaction<<Block as BlockT>::Extrinsic> + Send + Sync + 'static,
-        CIDP: CreateInherentDataProviders<Block, ()> + Send + 'static,
-        EC: EthConfig<Block, C>,
+where
+    // B: BlockT,
+    C: CallApiAt<Block> + ProvideRuntimeApi<Block>,
+    C::Api:
+        BlockBuilderApi<Block> + ConvertTransactionRuntimeApi<Block> + EthereumRuntimeRPCApi<Block>,
+    C: HeaderBackend<Block> + HeaderMetadata<Block, Error = BlockChainError>,
+    C: BlockchainEvents<Block>
+        + AuxStore
+        + UsageProvider<Block>
+        + StorageProvider<Block, BE>
+        + 'static,
+    BE: Backend<Block> + 'static,
+    P: TransactionPool<Block = Block> + 'static,
+    A: ChainApi<Block = Block> + 'static,
+    CT: ConvertTransaction<<Block as BlockT>::Extrinsic> + Send + Sync + 'static,
+    CIDP: CreateInherentDataProviders<Block, ()> + Send + 'static,
+    EC: EthConfig<Block, C>,
 {
-    use fc_rpc::{ Debug, DebugApiServer, Eth, EthApiServer, EthDevSigner,
-        EthFilter, EthFilterApiServer, EthPubSub, EthPubSubApiServer, EthSigner, Net, NetApiServer,
-        Web3, Web3ApiServer,
+    use fc_rpc::{
+        Debug, DebugApiServer, Eth, EthApiServer, EthDevSigner, EthFilter, EthFilterApiServer,
+        EthPubSub, EthPubSubApiServer, EthSigner, Net, NetApiServer, Web3, Web3ApiServer,
     };
 
     let EthDeps {
@@ -144,8 +147,8 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             // Some(Box::new(AuraConsensusDataProvider::new(client.clone()))),
             None,
         )
-            .replace_config::<EC>()
-            .into_rpc(),
+        .replace_config::<EC>()
+        .into_rpc(),
     )?;
 
     if let Some(filter_pool) = filter_pool {
@@ -159,7 +162,7 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
                 max_past_logs,
                 block_data_cache.clone(),
             )
-                .into_rpc(),
+            .into_rpc(),
         )?;
     }
 
@@ -172,7 +175,7 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             storage_override.clone(),
             pubsub_notification_sinks,
         )
-            .into_rpc(),
+        .into_rpc(),
     )?;
 
     io.merge(
@@ -182,7 +185,7 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             // Whether to format the `peer_count` response as Hex (default) or not.
             true,
         )
-            .into_rpc(),
+        .into_rpc(),
     )?;
 
     io.merge(Web3::new(client.clone()).into_rpc())?;
@@ -194,7 +197,7 @@ pub fn create_eth<C, BE, P, A, CT, CIDP, EC>(
             storage_override,
             block_data_cache,
         )
-            .into_rpc(),
+        .into_rpc(),
     )?;
 
     #[cfg(feature = "txpool")]
