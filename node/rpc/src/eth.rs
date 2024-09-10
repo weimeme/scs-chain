@@ -2,7 +2,7 @@ use std::{collections::BTreeMap, sync::Arc};
 
 use jsonrpsee::RpcModule;
 // Substrate
-use kitchensink_mainnet_runtime::opaque::Block;
+use common_runtime::opaque::Block;
 use sc_client_api::{
     backend::{Backend, StorageProvider},
     client::BlockchainEvents,

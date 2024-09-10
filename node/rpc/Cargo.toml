@@ -17,7 +17,10 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 jsonrpsee = { version = "0.22", features = ["server"] }
-kitchensink-mainnet-runtime = { path = "../../runtime/mainnet" }
+kitchensink-mainnet-runtime = { path = "../../runtime/mainnet", optional = true }
+kitchensink-testnet-runtime = { path = "../../runtime/testnet", optional = true }
+common-runtime = {path = "../../runtime/common"}
+
 fp-rpc = { workspace = true,  features = ["std"]}
 fc-api = { workspace = true}
 fc-mapping-sync = { workspace = true}
@@ -59,3 +62,8 @@ sp-application-crypto = { git="https://github.com/paritytech/polkadot-sdk", bran
 sp-statement-store = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 substrate-frame-rpc-system = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
 substrate-state-trie-migration-rpc = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0" }
+
+#[features]
+#tscs = ["kitchensink-testnet-runtime"]
+#scs = ["kitchensink-mainnet-runtime"]
+#all-runtimes = ["tscs", "scs"]

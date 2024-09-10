@@ -37,9 +37,9 @@ use sp_inherents::CreateInherentDataProviders;
 use std::sync::Arc;
 // use sc_consensus_grandpa_rpc::finality::RpcFinalityProofProvider;
 
+use common_runtime::opaque::Block;
+use common_runtime::{AccountId, Balance, BlockNumber, Hash, Nonce};
 use jsonrpsee::RpcModule;
-use kitchensink_mainnet_runtime::opaque::Block;
-use kitchensink_mainnet_runtime::{AccountId, Balance, BlockNumber, Hash, Nonce};
 use sc_client_api::AuxStore;
 use sc_client_api::{backend::StorageProvider, client::BlockchainEvents, UsageProvider};
 use sc_consensus_babe::BabeWorkerHandle;
