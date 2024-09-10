@@ -1,5 +1,5 @@
 [package]
-name = "kitchensink-runtime"
+name = "kitchensink-testnet-runtime"
 version = "3.0.0-dev"
 authors.workspace = true
 description = "Substrate node kitchensink runtime."
@@ -34,7 +34,7 @@ primitive-types = { version = "0.12.0", default-features = false, features = ["c
 polkadot-sdk = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", features = ["runtime", "tuples-96"], default-features = false }
 
 # shared code between runtime and node
-node-primitives = { path = "../node/primitives", default-features = false }
+node-primitives = { path = "../../node/primitives", default-features = false }
 
 # Example pallets that are not published:
 pallet-example-mbm = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", default-features = false }
