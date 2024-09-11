@@ -69,13 +69,8 @@ impl SubstrateCli for Cli {
     fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
         #[cfg(feature="scs")]
         let spec = match id {
-            "" => {
-                return Err(
-                    "Please specify which chain you want to run, e.g. --dev or --chain=local"
-                        .into(),
-                )
-            },
-            "dev" => Box::new(chain_spec::mainnet::development_config()),
+            "" | "mainnet" => Box::new(chain_spec::mainnet::tscs_config()?),
+            // "dev" => Box::new(chain_spec::mainnet::development_config()),
             // "local" => Box::new(chain_spec::local_testnet_config()),	// (
             // 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
             // 		// 	AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
@@ -101,8 +96,8 @@ impl SubstrateCli for Cli {
             // 		// 		.unchecked_into(),
             // 		// ),
             // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
-            "staging" => Box::new(chain_spec::mainnet::tscs_config()?),
-            "local" => Box::new(chain_spec::mainnet::staging_testnet_config()),
+            // "mainnet" => Box::new(chain_spec::mainnet::tscs_config()?),
+            // "local" => Box::new(chain_spec::mainnet::staging_testnet_config()),
             path => Box::new(chain_spec::mainnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
@@ -116,7 +111,7 @@ impl SubstrateCli for Cli {
                         .into(),
                 )
             },
-            "dev" => Box::new(chain_spec::testnet::development_config()),
+            // "dev" => Box::new(chain_spec::testnet::development_config()),
             // "local" => Box::new(chain_spec::local_testnet_config()),	// (
             // 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
             // 		// 	AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
@@ -142,8 +137,8 @@ impl SubstrateCli for Cli {
             // 		// 		.unchecked_into(),
             // 		// ),
             // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
-            "staging" => Box::new(chain_spec::testnet::tscs_config()?),
-            "local" => Box::new(chain_spec::testnet::staging_testnet_config()),
+            "staging" | "testnet" => Box::new(chain_spec::testnet::tscs_config()?),
+            // "local" => Box::new(chain_spec::testnet::staging_testnet_config()),
             path => Box::new(chain_spec::testnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
