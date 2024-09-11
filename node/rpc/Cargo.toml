@@ -17,8 +17,8 @@ targets = ["x86_64-unknown-linux-gnu"]
 
 [dependencies]
 jsonrpsee = { version = "0.22", features = ["server"] }
-kitchensink-mainnet-runtime = { path = "../../runtime/mainnet", optional = true }
-kitchensink-testnet-runtime = { path = "../../runtime/testnet", optional = true }
+# kitchensink-mainnet-runtime = { path = "../../runtime/mainnet", optional = true }
+# kitchensink-testnet-runtime = { path = "../../runtime/testnet", optional = true }
 common-runtime = {path = "../../runtime/common"}
 
 fp-rpc = { workspace = true,  features = ["std"]}

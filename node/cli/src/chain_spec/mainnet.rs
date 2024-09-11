@@ -19,8 +19,10 @@
 //! Substrate chain configurations.
 
 use hex_literal::hex;
+// todo
+use common_runtime::{AccountId};
 use kitchensink_mainnet_runtime::{
-    constants::currency::*, wasm_binary_unwrap, AccountId, Block, MaxNominations, SessionKeys,
+    constants::currency::*, wasm_binary_unwrap, Block, MaxNominations, SessionKeys,
     StakerStatus,
 };
 use pallet_im_online::sr25519::AuthorityId as ImOnlineId;

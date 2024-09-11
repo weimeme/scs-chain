@@ -25,7 +25,13 @@ use crate::{
     Cli, Subcommand,
 };
 use frame_benchmarking_cli::*;
-use kitchensink_mainnet_runtime::{opaque::Block, ExistentialDeposit, RuntimeApi};
+use common_runtime::opaque::Block;
+
+#[cfg(feature="scs")]
+use kitchensink_mainnet_runtime::{ExistentialDeposit, RuntimeApi};
+#[cfg(feature="tscs")]
+use kitchensink_testnet_runtime::{ExistentialDeposit, RuntimeApi};
+
 use sc_network::{Litep2pNetworkBackend, NetworkBackend};
 // use node_primitives::Block;
 use sc_cli::{Result, SubstrateCli};
@@ -61,14 +67,15 @@ impl SubstrateCli for Cli {
     }
 
     fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
+        #[cfg(feature="scs")]
         let spec = match id {
             "" => {
                 return Err(
                     "Please specify which chain you want to run, e.g. --dev or --chain=local"
                         .into(),
                 )
-            }
-            "dev" => Box::new(chain_spec::development_config()),
+            },
+            "dev" => Box::new(chain_spec::mainnet::development_config()),
             // "local" => Box::new(chain_spec::local_testnet_config()),	// (
             // 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
             // 		// 	AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
@@ -94,14 +101,56 @@ impl SubstrateCli for Cli {
             // 		// 		.unchecked_into(),
             // 		// ),
             // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
-            "staging" => Box::new(chain_spec::tscs_config()?),
-            "local" => Box::new(chain_spec::staging_testnet_config()),
-            path => Box::new(chain_spec::ChainSpec::from_json_file(
+            "staging" => Box::new(chain_spec::mainnet::tscs_config()?),
+            "local" => Box::new(chain_spec::mainnet::staging_testnet_config()),
+            path => Box::new(chain_spec::mainnet::ChainSpec::from_json_file(
+                std::path::PathBuf::from(path),
+            )?),
+        };
+
+        #[cfg(feature="tscs")]
+        let spec = match id {
+            "" => {
+                return Err(
+                    "Please specify which chain you want to run, e.g. --dev or --chain=local"
+                        .into(),
+                )
+            },
+            "dev" => Box::new(chain_spec::testnet::development_config()),
+            // "local" => Box::new(chain_spec::local_testnet_config()),	// (
+            // 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
+            // 		// 	AccountId::from(hex!("FCec624D3ACF3fCD4979195014EB18e0150f6E2D")),
+            // 		// 	// H160::from_str("3C53131b57B966aB755a88D458B2D60cD17Fd1FC").expect("internal H160 is valid; qed").into(),
+            // 		// 	// H160::from_str("FCec624D3ACF3fCD4979195014EB18e0150f6E2D").expect("internal H160 is valid; qed").into(),
+            // 		// 	// 5FMAvJiAMDJgvm3WWMF7ahouBeMtf5qsXYSv7hacuSic8TW5
+            // 		// 	array_bytes::hex2array_unchecked("9143ba611eee5bb7bc7d41dfc30429e405ef42be6734d3ca5f86f2ab6299129b")
+            // 		// 		.unchecked_into(),
+            // 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+            // 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+            // 		// 		.unchecked_into(),
+            // 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+            // 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+            // 		// 		.unchecked_into(),
+            // 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+            // 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+            // 		// 		.unchecked_into(),
+            // 		// 	// 5GCEEHnYhuCBtkLyaUnStomyoJAwX3jS2yhUKct6gK9wcip3
+            // 		// 	array_bytes::hex2array_unchecked("b6ade54294ac176068f9474df6137a4f7f1a692de610a571091cd8b2ae94e674")
+            // 		// 		.unchecked_into(),
+            // 		// 	// 5DnnuaPZq8FYZFHJsyF8WDfTcU7f4t2u8rjX8yEjhbkc3Q7r
+            // 		// 	array_bytes::hex2array_unchecked("03dfb0588ca98d1974feb9c5ac4d8ac5c9b877051e07c80a3db431a75d4861b734")
+            // 		// 		.unchecked_into(),
+            // 		// ),
+            // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
+            "staging" => Box::new(chain_spec::testnet::tscs_config()?),
+            "local" => Box::new(chain_spec::testnet::staging_testnet_config()),
+            path => Box::new(chain_spec::testnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
         };
         Ok(spec)
     }
+
 }
 
 /// Parse command line arguments into service configuration.

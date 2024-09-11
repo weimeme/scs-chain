@@ -38,10 +38,17 @@ use codec::Encode;
 use frame_benchmarking_cli::SUBSTRATE_REFERENCE_HARDWARE;
 use frame_system_rpc_runtime_api::AccountNonceApi;
 use futures::prelude::*;
-use kitchensink_mainnet_runtime::{opaque::Block, RuntimeApi};
+use common_runtime::opaque::Block;
+#[cfg(feature="scs")]
+use kitchensink_mainnet_runtime::{RuntimeApi};
+#[cfg(feature="tscs")]
+use kitchensink_testnet_runtime::{RuntimeApi};
 // use node_primitives::Block;
 use fc_storage::StorageOverrideHandler;
+#[cfg(feature="scs")]
 use kitchensink_mainnet_runtime::TransactionConverter;
+#[cfg(feature="tscs")]
+use kitchensink_testnet_runtime::TransactionConverter;
 use sc_client_api::{Backend as BackendT, BlockBackend};
 use sc_consensus_babe::{self, BabeWorkerHandle, SlotProportion};
 use sc_network::{
