@@ -110,7 +110,7 @@ node-inspect = { package = "staging-node-inspect", path = "../inspect", optional
 polkadot-sdk = { git="https://github.com/paritytech/polkadot-sdk", branch="release-polkadot-v1.13.0", features = ["frame-benchmarking-cli", "sc-cli", "sc-storage-monitor", "substrate-build-script-utils"], optional = true }
 
 [features]
-default = ["cli", "scs"]
+default = ["cli"]
 cli = [
 	"clap",
 	"clap_complete",
