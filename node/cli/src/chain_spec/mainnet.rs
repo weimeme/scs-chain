@@ -78,7 +78,7 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // }
 
 pub fn tscs_config() -> Result<ChainSpec, String> {
-    ChainSpec::from_json_bytes(&include_bytes!("./chain-spec.json")[..])
+    ChainSpec::from_json_bytes(&include_bytes!("../../res/chain-spec.json")[..])
 }
 fn session_keys(
     // ed25519
