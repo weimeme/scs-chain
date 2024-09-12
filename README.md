@@ -10,9 +10,9 @@ welcome to [SuperEx](https://www.superex.com/)
 
 ## develop
 ### install your environment
-[build node](./docs/bu)
+[install your environment](./docs/install-environment.md)
 
 ### build your node
 
-- [local node](./docs/build-node-local.md)
-- [docker node](./docs/build-node-docker.md)
+- [build local node](./docs/build-node-local.md)
+- [build docker node](./docs/build-node-docker.md)
