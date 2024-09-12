@@ -14,7 +14,7 @@ RUN rustup default stable && \
 
 WORKDIR /scs
 COPY . /scs
-RUN cargo build --release
+RUN cargo build --release --features tscs
 
 # This is the 2nd stage: a very small image where we copy the scs binary."
 FROM docker.io/library/ubuntu:22.04
