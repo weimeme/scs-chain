@@ -19,7 +19,6 @@
 //! Substrate chain configurations.
 
 use hex_literal::hex;
-// todo
 use common_runtime::{AccountId};
 use kitchensink_mainnet_runtime::{
     constants::currency::*, wasm_binary_unwrap, Block, MaxNominations, SessionKeys,
@@ -77,8 +76,8 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // 	ChainSpec::from_json_bytes(&include_bytes!("../res/flaming-fir.json")[..])
 // }
 
-pub fn tscs_config() -> Result<ChainSpec, String> {
-    ChainSpec::from_json_bytes(&include_bytes!("../../res/chain-spec.json")[..])
+pub fn scs_config() -> Result<ChainSpec, String> {
+    ChainSpec::from_json_bytes(&include_bytes!("../../res/scs-chain-spec.json")[..])
 }
 fn session_keys(
     // ed25519
@@ -206,14 +205,14 @@ fn staging_testnet_config_genesis(chain_id: u32) -> serde_json::Value {
     let (initial_authorities, root_key, endowed_accounts) =
         configure_accounts_for_staging_testnet();
     let extra_endowed_accounts_balance = vec![
-        (
-            AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")),
-            100_000_000 * DOLLARS,
-        ),
-        (
-            AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")),
-            50_000_000 * DOLLARS,
-        ),
+        // (
+        //     AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")),
+        //     100_000_000 * DOLLARS,
+        // ),
+        // (
+        //     AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")),
+        //     50_000_000 * DOLLARS,
+        // ),
     ];
     testnet_genesis(
         initial_authorities,
@@ -227,15 +226,15 @@ fn staging_testnet_config_genesis(chain_id: u32) -> serde_json::Value {
 
 /// Staging testnet config.
 pub fn staging_testnet_config() -> ChainSpec {
-    let chain_id = 1969u32;
+    let chain_id = 1970u32;
     ChainSpec::builder(wasm_binary_unwrap(), Default::default())
-        .with_name("Super Smart Chain Testnet")
-        .with_id("tscs")
+        .with_name("SuperEx Smart Chain")
+        .with_id("scs")
         .with_protocol_id("scs")
-        .with_fork_id("tscs")
+        .with_fork_id("scs")
         .with_properties(
             serde_json::from_str(
-                "{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}",
+                "{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"SCS\"}",
             )
             .expect("Provided valid json map"),
         )

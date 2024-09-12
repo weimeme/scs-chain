@@ -78,7 +78,7 @@ pub type ChainSpec = sc_service::GenericChainSpec<Extensions>;
 // }
 
 pub fn tscs_config() -> Result<ChainSpec, String> {
-    ChainSpec::from_json_bytes(&include_bytes!("../../res/chain-spec.json")[..])
+    ChainSpec::from_json_bytes(&include_bytes!("../../res/tscs-chain-spec.json")[..])
 }
 fn session_keys(
     // ed25519
@@ -229,7 +229,7 @@ fn staging_testnet_config_genesis(chain_id: u32) -> serde_json::Value {
 pub fn staging_testnet_config() -> ChainSpec {
     let chain_id = 1969u32;
     ChainSpec::builder(wasm_binary_unwrap(), Default::default())
-        .with_name("Super Smart Chain Testnet")
+        .with_name("TSCS Network")
         .with_id("tscs")
         .with_protocol_id("scs")
         .with_fork_id("tscs")

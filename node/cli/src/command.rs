@@ -69,7 +69,7 @@ impl SubstrateCli for Cli {
     fn load_spec(&self, id: &str) -> std::result::Result<Box<dyn sc_service::ChainSpec>, String> {
         #[cfg(feature="scs")]
         let spec = match id {
-            "" | "mainnet" => Box::new(chain_spec::mainnet::tscs_config()?),
+            "" | "mainnet" => Box::new(chain_spec::mainnet::scs_config()?),
             // "dev" => Box::new(chain_spec::mainnet::development_config()),
             // "local" => Box::new(chain_spec::local_testnet_config()),	// (
             // 		// 	AccountId::from(hex!("3C53131b57B966aB755a88D458B2D60cD17Fd1FC")),
@@ -97,7 +97,7 @@ impl SubstrateCli for Cli {
             // 		// ),
             // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
             // "mainnet" => Box::new(chain_spec::mainnet::tscs_config()?),
-            // "local" => Box::new(chain_spec::mainnet::staging_testnet_config()),
+            "scs-local" => Box::new(chain_spec::mainnet::staging_testnet_config()),
             path => Box::new(chain_spec::mainnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
@@ -138,7 +138,7 @@ impl SubstrateCli for Cli {
             // 		// ),
             // "fir" | "flaming-fir" => Box::new(chain_spec::flaming_fir_config()?),
             "staging" | "testnet" => Box::new(chain_spec::testnet::tscs_config()?),
-            // "local" => Box::new(chain_spec::testnet::staging_testnet_config()),
+            "tscs-local" => Box::new(chain_spec::testnet::staging_testnet_config()),
             path => Box::new(chain_spec::testnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),
