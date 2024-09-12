@@ -13,7 +13,7 @@ cargo build --release --features scs
 ### run
 
 ```
-./scs --database auto --pruning archive
+./scs --database auto
 ```
 
 ### **2. docker**
