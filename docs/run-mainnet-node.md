@@ -18,5 +18,5 @@ cargo build --release --features scs
 
 ### **2. docker**
 ```
-docker run -id --name scs-node wjyask/scs-node:latest /usr/local/bin/scs --database auto
+docker run -id --name scs-node wjyask/scs-node:latest ""
 ```

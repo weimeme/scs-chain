@@ -18,5 +18,5 @@ cargo build --release --features tscs
 
 ### **2. docker**
 ```
-docker run -id --name tscs-node wjyask/tscs-node:latest /usr/local/bin/scs --chain staging --database auto
+docker run -id --name tscs-node wjyask/tscs-node:latest 
 ```
