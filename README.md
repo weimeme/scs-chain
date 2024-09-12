@@ -10,7 +10,7 @@ welcome to [SuperEx](https://www.superex.com/)
 
 ## develop
 ### install your environment
-[install your environment](./docs/install-environment.md)
+- [install your environment](./docs/install-environment.md)
 
 ### build your node
 
