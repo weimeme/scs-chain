@@ -80,6 +80,7 @@ impl SubstrateCli for Cli {
         let spec = match id {
             "staging" | "testnet" | "" => Box::new(chain_spec::testnet::tscs_config()?),
             "tscs-local" => Box::new(chain_spec::testnet::staging_testnet_config()),
+            "dev" => Box::new(chain_spec::testnet::development_config()),
             path => Box::new(chain_spec::testnet::ChainSpec::from_json_file(
                 std::path::PathBuf::from(path),
             )?),

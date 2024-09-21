@@ -535,17 +535,20 @@ pub fn testnet_genesis(
 
 fn development_config_genesis_json() -> serde_json::Value {
     let extra_endowed_accounts_balance = vec![
-        (
-            AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
-            100_000_000 * DOLLARS,
-        ),
-        (
-            AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")),
-            100_000_000 * DOLLARS,
-        ),
-        (
-            AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")),
-            50_000_000 * DOLLARS,
+        // (
+        //     AccountId::from(hex!("Acf2628C421137F6cb3E7D9c5B235B44ffdf9952")),
+        //     100_000_000 * DOLLARS,
+        // ),
+        // (
+        //     AccountId::from(hex!("8B3f123cf9F3b2E147142d3e99396695c09A34E7")),
+        //     100_000_000 * DOLLARS,
+        // ),
+        // (
+        //     AccountId::from(hex!("93A3A1c3dbccdbA8Df744a97f4Cc702e2F8663D1")),
+        //     50_000_000 * DOLLARS,
+        // ),
+        (AccountId::from(hex!("3Cd0A705a2DC65e5b1E1205896BaA2be8A07c6e0")),
+        1000_000_000 * DOLLARS,
         ),
     ];
     testnet_genesis(
@@ -570,7 +573,7 @@ pub fn development_config() -> ChainSpec {
         // .with_properties(serde_json::from_str("{\"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}")
         .with_properties(
             serde_json::from_str(
-                "{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"TSCS\"}",
+                "{\"isEthereum\": true, \"tokenDecimals\": 18, \"tokenSymbol\": \"UNIT\"}",
             )
             .expect("Provided valid json map"),
         )
