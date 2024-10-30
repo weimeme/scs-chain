@@ -74,6 +74,10 @@ fp-account = { workspace = true }
 fp-dynamic-fee = { workspace = true, features = ["default"] }
 fp-evm = { workspace = true, features = ["default"] }
 fp-rpc = { workspace = true, features = ["default"] }
+
+# 
+babe-consensus-data-provider = { workspace = true }
+
 #frontier-template-runtime = { workspace = true, features = ["std"] }
 
 [dev-dependencies]

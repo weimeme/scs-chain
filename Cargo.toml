@@ -75,6 +75,8 @@ fc-rpc-v2 = { git="https://github.com/ChainSupport/frontier.git", branch="releas
 fc-rpc-v2-api = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0" }
 fc-rpc-v2-types = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0" }
 fc-storage = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0" }
+#
+babe-consensus-data-provider = {git = "https://github.com/ChainSupport/frontier-pos-template.git", branch = "release-polkadot-v1.13.0"}
 # Frontier Primitive
 fp-account = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }
 fp-consensus = { git="https://github.com/ChainSupport/frontier.git", branch="release-polkadot-v1.13.0", default-features = false }

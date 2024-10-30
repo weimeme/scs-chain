@@ -992,6 +992,26 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "0c4b4d0bd25bd0b74681c0ad21497610ce1b7c91b1022cd21c80c6fbdd9476b0"
 
 [[package]]
+name = "babe-consensus-data-provider"
+version = "0.1.0"
+source = "git+https://github.com/ChainSupport/frontier-pos-template.git?branch=release-polkadot-v1.13.0#11cc805b1f803d3bf3a4bd2dcff335589ae8b8b1"
+dependencies = [
+ "fc-rpc",
+ "sc-client-api",
+ "sc-consensus-babe",
+ "sc-service",
+ "scale-info",
+ "schnorrkel 0.11.4",
+ "sp-api",
+ "sp-application-crypto",
+ "sp-consensus-babe",
+ "sp-core",
+ "sp-inherents",
+ "sp-keystore",
+ "sp-runtime",
+]
+
+[[package]]
 name = "backtrace"
 version = "0.3.73"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4129,12 +4149,14 @@ dependencies = [
  "fp-rpc",
  "fp-storage",
  "futures",
+ "kvdb-rocksdb",
  "log",
  "parity-db",
  "parity-scale-codec",
  "parking_lot 0.12.3",
  "sc-client-api",
  "sc-client-db",
+ "smallvec",
  "sp-api",
  "sp-blockchain",
  "sp-core",
@@ -7518,6 +7540,7 @@ dependencies = [
 name = "node-rpc"
 version = "3.0.0-dev"
 dependencies = [
+ "babe-consensus-data-provider",
  "common-runtime",
  "fc-api",
  "fc-mapping-sync",
@@ -16831,6 +16854,7 @@ version = "3.0.0-dev"
 dependencies = [
  "array-bytes",
  "assert_cmd",
+ "babe-consensus-data-provider",
  "clap",
  "clap_complete",
  "common-runtime",
